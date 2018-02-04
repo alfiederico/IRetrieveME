@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+>
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="3"
+    android:orientation="vertical"
+ >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Coke 1.25"
+        android:id="@+id/txtID"
+        android:textSize="14dp"
+        android:layout_weight="1.5"
+        />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/txtTypeID"
+        android:textSize="14dp"
+        android:layout_weight="0.5"
+        />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="$100"
+        android:id="@+id/txtType"
+        android:textSize="14dp"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:paddingRight="2dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/txtSubject"
+        android:textSize="14dp"
+        android:layout_weight="0.5"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/txtDescription"
+        android:textSize="14dp"
+        android:layout_weight="0.5"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/txtDate"
+        android:textSize="14dp"
+        android:layout_weight="0.5"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/txtPlace"
+        android:textSize="14dp"
+        android:layout_weight="0.5"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/txtLocation"
+        android:textSize="14dp"
+        android:layout_weight="0.5"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:id="@+id/txtSettleID"
+        android:textSize="14dp"
+        android:layout_weight="0.5"
+        />
+</LinearLayout>
+
+</LinearLayout>

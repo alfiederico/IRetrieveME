@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="#BBDEFB"
+    >
+
+ <LinearLayout
+     android:layout_width="fill_parent"
+     android:layout_height="1dp"
+     android:background="@drawable/rect"></LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CONTACT US"
+        android:id="@+id/textView2"
+        android:textColor="#F44336"
+        android:textStyle="bold"
+        android:layout_marginTop="14dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textSize="14dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:orientation="vertical"
+        android:weightSum="2"
+        >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:paddingTop="12dp"
+            android:layout_weight="1">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Philippines"
+            android:id="@+id/txtStoreName1"
+android:layout_gravity="center_vertical"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="01 2345 6789"
+                android:gravity="left"
+                android:paddingLeft="16dp"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/call"
+                android:textSize="12dp"
+                android:layout_weight="0.5"
+                android:drawablePadding="6dp"
+               />
+
+
+     </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:paddingTop="12dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="Olongapo City"
+
+                android:layout_gravity="center_vertical"
+                android:textSize="12dp"
+              />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:text="contact@iretrieve.com"
+android:drawableLeft="@drawable/storemail"
+                android:paddingLeft="16dp"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12dp"
+              android:drawablePadding="6dp"
+                android:layout_weight="0.5"
+
+                />
+
+
+        </LinearLayout>
+
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/storerect"
+        android:layout_marginTop="16dp"
+
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"></LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IRETRIEVE"
+        android:id="@+id/textView23"
+        android:textColor="#F44336"
+        android:textStyle="bold"
+        android:layout_marginTop="14dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textSize="14dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:orientation="vertical"
+        android:weightSum="2"
+        >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:paddingTop="12dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="Sales"
+                android:id="@+id/txtStoreName1222"
+                android:layout_gravity="center_vertical"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="03 1234 5678"
+                android:gravity="left"
+                android:paddingLeft="16dp"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/call"
+                android:textSize="12dp"
+                android:layout_weight="0.5"
+                android:drawablePadding="6dp"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:paddingTop="12dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text=""
+
+                android:layout_gravity="center_vertical"
+                android:textSize="12dp"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:text="sales@iretrieve.com"
+                android:drawableLeft="@drawable/storemail"
+                android:paddingLeft="16dp"
+                android:layout_gravity="center_horizontal"
+                android:textSize="12dp"
+                android:drawablePadding="6dp"
+                android:layout_weight="0.5"
+
+                />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:orientation="vertical"
+        android:weightSum="2"
+        >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:paddingTop="12dp"
+            android:layout_marginBottom="14dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="Support"
+                android:id="@+id/txtStoreName12"
+                android:layout_gravity="center_vertical"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="(03) 4567 8910"
+                android:gravity="left"
+                android:paddingLeft="16dp"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/call"
+                android:textSize="12dp"
+                android:layout_weight="0.5"
+                android:drawablePadding="6dp"
+                />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

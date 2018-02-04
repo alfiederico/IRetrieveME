@@ -1,0 +1,173 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"  tools:context=".MainActivity"
+    android:background="#E3F2FD">
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+    <LinearLayout
+        android:id="@+id/lin_lay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="top|center"
+        android:gravity="top|center"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+
+        <Spinner
+            android:id="@+id/editType"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
+
+            android:prompt="@string/spinner_title"
+            android:paddingLeft="8dp"
+
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+
+
+            android:textColor="#424242"
+            />
+
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
+            android:id="@+id/editSubject"
+            android:paddingLeft="8dp"
+            android:drawablePadding="10dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:drawableLeft="@drawable/email"
+            android:hint="Subject"
+            android:textColorHint="#9e9e9e"
+            android:textColor="#424242"
+            android:maxLength="32"/>
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editDescription"
+            android:layout_below="@+id/editText"
+            android:paddingLeft="8dp"
+            android:drawablePadding="10dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:drawableLeft="@drawable/email"
+            android:hint="Description"
+            android:textColorHint="#9e9e9e"
+
+            android:textColor="#424242"
+            android:maxLength="32"/>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/editDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:hint="Search Date Here"
+                android:editable="false"/>
+
+
+            <Button
+                android:id="@+id/date_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:onClick="onDateSearch"
+                android:text="Search" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/editPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:hint="Search Location Here" />
+
+
+            <Button
+                android:id="@+id/search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:onClick="onMapSearch"
+                android:text="Search" />
+
+        </LinearLayout>
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            tools:context="com.viralandroid.googlemapsandroidapi.MapsActivity" />
+
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editContact"
+            android:layout_below="@+id/editText"
+            android:paddingLeft="8dp"
+            android:drawablePadding="10dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:drawableLeft="@drawable/email"
+            android:hint="Contact Details"
+            android:textColorHint="#9e9e9e"
+
+            android:textColor="#424242"
+            android:maxLength="32"/>
+
+
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:id="@+id/btnReport"
+            android:layout_below="@+id/editText2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:background="#42A5F5"
+            android:textColor="#ffffff" />
+
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>
+
+</RelativeLayout>
