@@ -41,6 +41,9 @@ public class Activity_History extends Activity {
     List<String> listDataHeader;
     HashMap<String, List<History>> listDataChild;
     Context context = null;
+
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -269,7 +272,7 @@ public class Activity_History extends Activity {
                 AccountManager accountManager = AccountManager.get(mContext);
                 Account[] accounts = accountManager.getAccountsByType("IRetrieve");
 
-                final String url = "http://192.168.254.10:8089/mobile/history?userid=" + accounts[0].name;
+                final String url = SERVICE_URL + "/mobile/history?userid=" + accounts[0].name;
 
                 RestTemplate restTemplate = new RestTemplate();
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();

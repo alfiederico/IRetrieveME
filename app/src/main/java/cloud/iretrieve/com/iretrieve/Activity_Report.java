@@ -74,6 +74,8 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleApiClient googleApiClient;
 
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -381,7 +383,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
     }
 
     private class AddReportTask extends AsyncTask<Void,Void,Report>{
-        private String url = "http://192.168.254.10:8089/mobile/report";
+        private String url = SERVICE_URL + "/mobile/report";
         private RestTemplate rest = new RestTemplate();
 
         private Context mContext = null;
@@ -458,7 +460,11 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
                     builder.setMessage("Report Successful");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            NavUtils.navigateUpFromSameTask((Activity) mContext);
+                           // NavUtils.navigateUpFromSameTask((Activity) mContext);
+                            Intent intent = new Intent();
+                            intent.putExtra("editReport", "value_here");
+                            setResult(RESULT_OK, intent);
+                            finish();
                         }
                     });
                     builder.show();

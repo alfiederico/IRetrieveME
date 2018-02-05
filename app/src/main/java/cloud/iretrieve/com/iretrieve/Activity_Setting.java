@@ -47,6 +47,8 @@ public class Activity_Setting extends Activity {
     EditText mPhone;
     Button btnRegister;
     Context context = null;
+
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,7 +170,7 @@ public class Activity_Setting extends Activity {
                 AccountManager accountManager = AccountManager.get(mContext);
                 Account[] accounts = accountManager.getAccountsByType("IRetrieve");
 
-                final String url = "http://192.168.254.10:8089/mobile/setting?userid=" + accounts[0].name;
+                final String url = SERVICE_URL + "/mobile/setting?userid=" + accounts[0].name;
 
                 RestTemplate restTemplate = new RestTemplate();
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
@@ -257,7 +259,7 @@ public class Activity_Setting extends Activity {
                 AccountManager accountManager = AccountManager.get(mContext);
                 Account[] accounts = accountManager.getAccountsByType("IRetrieve");
 
-                final String url = "http://192.168.254.10:8089/mobile/updateSetting";
+                final String url = SERVICE_URL + "/mobile/updateSetting";
 
                 RestTemplate restTemplate = new RestTemplate();
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();

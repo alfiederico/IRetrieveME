@@ -41,7 +41,7 @@ import static junit.framework.Assert.assertTrue;
 
 
 public class MainActivity extends Activity {
-    private static final String SERVICE_URL = "http://192.168.1.83:8088/DriverApp/user.json?";
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
     TextView txtRegister;
     TextView txtForgot;
     Button btnLogin;
@@ -271,7 +271,7 @@ public class MainActivity extends Activity {
                 String username = editUsername.getText().toString();
                 String psw = editPassword.getText().toString();
 
-                final String url = "http://192.168.254.10:8089/mobile/login?username=" + username + "&password=" + psw;
+                final String url = SERVICE_URL + "/mobile/login?username=" + username + "&password=" + psw;
 
 
                 RestTemplate restTemplate = new RestTemplate();
@@ -325,10 +325,6 @@ public class MainActivity extends Activity {
                     }
                     editor.commit();
 
-
-
-
-
                     AccountManager accountManager = AccountManager.get(mContext);
                     Account[] accounts = accountManager.getAccountsByType("IRetrieve");
                     boolean bCreate = true;
@@ -361,7 +357,15 @@ public class MainActivity extends Activity {
 
                     Intent i = new Intent(mContext, Activity_Dashboard.class);
                     mContext.startActivity(i);
-                }else{
+                }
+                else if(message != null && message.getContent().equals("activate") ){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Account not active");
+                    builder.setMessage("User account not active. Please check your email.");
+                    builder.setPositiveButton("OK", null);
+                    builder.show();
+                }
+                else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Login Failed");
                     builder.setMessage("The username or password you entered doesnt appear to belong to an account. Please try again.");

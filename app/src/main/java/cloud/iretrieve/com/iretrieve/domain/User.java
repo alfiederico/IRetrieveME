@@ -28,7 +28,7 @@ public class User {
     private String lastName;
 
     @JsonProperty("active")
-    private int active;
+    private boolean active;
 
     @JsonProperty("phone")
     private String phone;
@@ -83,11 +83,11 @@ public class User {
         this.email = email;
     }
 
-    public int getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(int active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 

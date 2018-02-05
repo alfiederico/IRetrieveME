@@ -131,6 +131,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -360,6 +362,17 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         }
 
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 3) {
+            if(resultCode == RESULT_OK) {
+                //String strEditText = data.getStringExtra("editTextValue");
+                new PopulateChartTask(context).execute();
+            }
+        }
     }
 
     public void onMapSearch(View view) {
@@ -675,7 +688,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                 switch(category){
                     case "home":
 
-                        final String url = "http://192.168.254.10:8089/mobile/reports";
+                        final String url = SERVICE_URL + "mobile/reports";
 
                         RestTemplate restTemplate = new RestTemplate();
                         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
@@ -697,7 +710,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     case "Report":
                         Intent i = new Intent(mContext, Activity_Report.class);
 
-                        startActivity(i);
+                        startActivityForResult(i, 3);
                         break;
                     case "Settle":
                         Intent ii = new Intent(mContext, Activity_Settle.class);

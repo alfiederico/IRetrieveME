@@ -42,6 +42,9 @@ public class Activity_Registration extends Activity {
     EditText mRePassword;
     EditText mPhone;
     Button btnRegister;
+
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,7 +167,7 @@ public class Activity_Registration extends Activity {
     }
 
     private class AddUserTask extends AsyncTask<Void,Void,User>{
-        private String url = "http://192.168.254.10:8089/mobile/registration";
+        private String url = SERVICE_URL + "/mobile/registration";
         private RestTemplate rest = new RestTemplate();
 
         private Context mContext = null;
@@ -223,9 +226,21 @@ public class Activity_Registration extends Activity {
                     builder.setMessage("The email you entered already belong to an account. Please try again.");
                     builder.setPositiveButton("OK", null);
                     builder.show();
-                }else{
+                }
+                else if(user.getName().equals("Verify") && user.getLastName().equals("")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setMessage("Registration Successful");
+                    builder.setMessage("There is already a user registered with the email provided. Please check confirmation message sent to this email account.");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent i = new Intent(mContext, MainActivity.class);
+                            mContext.startActivity(i);
+                        }
+                    });
+                    builder.show();
+                }
+                else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setMessage("You registered successfully. We will send you a confirmation message to your email account.");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                            Intent i = new Intent(mContext, MainActivity.class);

@@ -31,6 +31,8 @@ import java.util.List;
 public class Activity_SettleFeed extends Activity {
 
     public int myreportid = 0;
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +131,7 @@ public class Activity_SettleFeed extends Activity {
         @Override
         protected Report[] doInBackground(Void... params) {
             try {
-                final String url = "http://192.168.254.10:8089/mobile/isettlefeed?isettle=" + myreportid;
+                final String url = SERVICE_URL + "/mobile/isettlefeed?isettle=" + myreportid;
 
                 RestTemplate restTemplate = new RestTemplate();
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();

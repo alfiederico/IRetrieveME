@@ -42,6 +42,7 @@ public class Activity_Settle extends Activity {
     EditText mReferenceID;
     Button btnReport;
     Context context = null;
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -176,7 +177,7 @@ public class Activity_Settle extends Activity {
                 AccountManager accountManager = AccountManager.get(mContext);
                 Account[] accounts = accountManager.getAccountsByType("IRetrieve");
 
-                final String url = "http://192.168.254.10:8089/mobile/settle?userid=" + accounts[0].name;
+                final String url = SERVICE_URL + "/mobile/settle?userid=" + accounts[0].name;
 
                 RestTemplate restTemplate = new RestTemplate();
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
@@ -273,7 +274,7 @@ public class Activity_Settle extends Activity {
                 AccountManager accountManager = AccountManager.get(mContext);
                 Account[] accounts = accountManager.getAccountsByType("IRetrieve");
 
-                final String url = "http://192.168.254.10:8089/mobile/isettle?isettle=" + id + "&userid=" + accounts[0].name ;
+                final String url = SERVICE_URL + "/mobile/isettle?isettle=" + id + "&userid=" + accounts[0].name ;
 
                 RestTemplate restTemplate = new RestTemplate();
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();

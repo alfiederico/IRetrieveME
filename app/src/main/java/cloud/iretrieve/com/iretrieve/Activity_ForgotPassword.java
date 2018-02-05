@@ -18,6 +18,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cloud.iretrieve.com.iretrieve.domain.Message;
+
 
 public class Activity_ForgotPassword extends Activity {
     private Form mForm;
@@ -25,6 +34,9 @@ public class Activity_ForgotPassword extends Activity {
     private TextView txtRegister;
     private TextView txtLogin;
     Button btnRecover;
+
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,8 +136,7 @@ public class Activity_ForgotPassword extends Activity {
     }
     public void sendEmailData() {
         try{
-            EmailTask est = new EmailTask(1, this, "Sending data...",mEmail.getText().toString());
-            est.execute(new String[]{""});
+            new EmailTask(this).execute();
         }catch(Exception w){
 
         }
@@ -140,24 +151,43 @@ public class Activity_ForgotPassword extends Activity {
                         .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    private class EmailTask extends AsyncTask<String, Integer, String> {
+    private class EmailTask extends AsyncTask<Void, Void, Message> {
 
-        private ProgressDialog pDlg = null;
+
+
         private Context mContext = null;
-        private String processMessage = "Processing...";
-        private String emailDestination;
-        private String message = "Dear Sir/Madam,\n\nYou may now log-in to DPos cloud mobile using the information below:\n\n";
+        private ProgressDialog pDlg = null;
 
-        public EmailTask(int taskType, Context mContext, String processMessage, String email) {
+        public EmailTask(Context mContext) {
             this.mContext = mContext;
-            this.processMessage = processMessage;
-            this.emailDestination = email;
         }
 
         @Override
-        protected String doInBackground(String... params) {
-            doSendEmail();
-            return null;
+        protected Message doInBackground(Void... params) {
+
+            try{
+
+                String url = SERVICE_URL + "/mobile/forgotpassword?email=" + mEmail.getText().toString();
+
+                RestTemplate restTemplate = new RestTemplate();
+                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+
+
+                List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
+                supportedMediaTypes.add(new MediaType("text", "plain"));
+                supportedMediaTypes.add(new MediaType("application", "json"));
+                converter.setSupportedMediaTypes(supportedMediaTypes);
+
+                restTemplate.getMessageConverters().add(converter);
+                Message message = restTemplate.getForObject(url,Message.class);
+
+                return message;
+
+            } catch (Exception ex) {
+                showMessage(ex.toString());
+                return null;
+            }
+
         }
 
         @Override
@@ -166,26 +196,51 @@ public class Activity_ForgotPassword extends Activity {
             showProgressDialog();
 
         }
+
+        public void showMessage(String e) {
+            AlertDialog.Builder diag = new AlertDialog.Builder(mContext);
+            diag.setTitle("Message");
+            diag.setMessage(e);
+            diag.show();
+        }
         @Override
-        protected void onPostExecute(String response) {
+        protected void onPostExecute(Message message) {
 
             pDlg.dismiss();
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setMessage("Email already sent");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Intent i = new Intent(mContext, MainActivity.class);
-                    mContext.startActivity(i);
-                }
-            });
-            builder.show();
+
+
+
+            if(message.getContent().equals("success") ){
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Success");
+                builder.setMessage("Please check your email to recover password");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i = new Intent(mContext, MainActivity.class);
+                        mContext.startActivity(i);
+                    }
+                });
+                builder.show();
+            }else if(message.getContent().equals("fail")){
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Fail");
+                builder.setMessage("Email does not belong to any account.");
+                builder.setPositiveButton("OK", null);
+                builder.show();
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Exception");
+                builder.setMessage(message.getContent());
+                builder.setPositiveButton("OK", null);
+                builder.show();
+            }
 
         }
 
         private void showProgressDialog() {
 
             pDlg = new ProgressDialog(mContext);
-            pDlg.setMessage(processMessage);
+            pDlg.setMessage("Sending");
             pDlg.setProgressDrawable(mContext.getWallpaper());
             pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDlg.setCancelable(false);
@@ -193,21 +248,7 @@ public class Activity_ForgotPassword extends Activity {
 
         }
 
-        public void doSendEmail() {
-            try {
-                Email_GMailSender sender = new Email_GMailSender("alfiederico@gmail.com", "bdsxy1523");
-                message += "Username: admin\nRetrieved Password: admin1236\n\n";
-                message += "Should you encounter any problems accessing your account, please call the Deliverit at (03) 9803 1611  or email us at member_relations@sss.gov.ph for assistance.\n" +
-                        "Thank you for using the DPos cloud mobile.\n\n";
-                message += "This is a system-generated e-mail. Please do not reply.";
 
-                sender.sendMail("DPos Cloud Forgot Password",
-                        message,
-                        "alfiederico@gmail.com",
-                        emailDestination);
-            } catch (Exception e) {
-            }
-        }
     }
 
 }
