@@ -43,6 +43,7 @@ public class Activity_Setting extends Activity {
     EditText mName;
     EditText mNameLast;
     EditText mPassword;
+    EditText mRadius;
 
     EditText mPhone;
     Button btnRegister;
@@ -68,6 +69,7 @@ public class Activity_Setting extends Activity {
         mName = (EditText)findViewById(R.id.editName);
         mNameLast = (EditText)findViewById(R.id.editLastName);
         mPassword = (EditText)findViewById(R.id.editPassword);
+        mRadius = (EditText)findViewById(R.id.editRadius);
 
         mPhone = (EditText)findViewById(R.id.editPhone);
         btnRegister = (Button)findViewById(R.id.btnRegister);
@@ -84,6 +86,7 @@ public class Activity_Setting extends Activity {
         mForm.addField(Field.using(mEmail).validate(Validation_NotEmpty.build(this)).validate(Validation_IsEmail.build(this)));
         mForm.addField(Field.using(mPassword).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mPhone).validate(Validation_NotEmpty.build(this)));
+        mForm.addField(Field.using(mRadius).validate(Validation_NotEmpty.build(this)));
  ;
     }
     public void createListener(){
@@ -223,6 +226,7 @@ public class Activity_Setting extends Activity {
                     mPassword.setText("");
 
                     mPhone.setText(user.getPhone());
+                    mRadius.setText(user.getRadius());
 
                 }
             }catch(Exception ex){
@@ -276,6 +280,7 @@ public class Activity_Setting extends Activity {
                 user.setPassword(mPassword.getText().toString());
                 user.setPhone(mPhone.getText().toString());
                 user.setUserId(Integer.parseInt(accounts[0].name));
+                user.setRadius(mRadius.getText().toString());
 
 
                 restTemplate.getMessageConverters().add(converter);
@@ -318,9 +323,15 @@ public class Activity_Setting extends Activity {
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setMessage("Update Setting Successful");
+                    final String dummy = user.getRadius();
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            NavUtils.navigateUpFromSameTask((Activity) mContext);
+                            //NavUtils.navigateUpFromSameTask((Activity) mContext);
+
+                            Intent intent = new Intent();
+                            intent.putExtra("intRadius", dummy);
+                            setResult(4, intent);
+                            finish();
                         }
                     });
                     builder.show();

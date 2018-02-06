@@ -33,6 +33,9 @@ public class User {
     @JsonProperty("phone")
     private String phone;
 
+    @JsonProperty("radius")
+    private String radius;
+
     private Set<Role> roles;
 
     public String getPhone() {
@@ -97,6 +100,14 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getRadius() {
+        return radius;
+    }
+
+    public void setRadius(String radius) {
+        this.radius = radius;
     }
 }
 

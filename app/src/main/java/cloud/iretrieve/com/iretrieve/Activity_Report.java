@@ -462,8 +462,8 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
                         public void onClick(DialogInterface dialog, int id) {
                            // NavUtils.navigateUpFromSameTask((Activity) mContext);
                             Intent intent = new Intent();
-                            intent.putExtra("editReport", "value_here");
-                            setResult(RESULT_OK, intent);
+                            //intent.putExtra("intRadius", dummy);
+                            setResult(3, intent);
                             finish();
                         }
                     });

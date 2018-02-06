@@ -325,7 +325,11 @@ public class Activity_Settle extends Activity {
                     builder.setMessage(message.getContent());
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                      public void onClick(DialogInterface dialog, int id) {
-                         NavUtils.navigateUpFromSameTask((Activity) mContext);
+                         //NavUtils.navigateUpFromSameTask((Activity) mContext);
+                         Intent intent = new Intent();
+                         //intent.putExtra("intRadius", dummy);
+                         setResult(5, intent);
+                         finish();
                      }
                      });
                     builder.show();

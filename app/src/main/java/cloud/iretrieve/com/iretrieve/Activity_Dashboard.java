@@ -122,7 +122,6 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     private int myreportid = 0;
     public Menu badgeMenu;
     private static final int SAMPLE2_ID = 34535;
-    public static final String MyURL = "192.168.1.76:8088";
 
     private GoogleMap mMap;
 
@@ -133,6 +132,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private static final String SERVICE_URL = "http://192.168.254.3:8089";
 
+    private static int iRadius = 50;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +141,9 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity__dashboard);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        iRadius = getIntent().getIntExtra("iRadius",50);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -212,9 +214,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             String formattedDate = sub.format(c.getTime());
             Date date = sub.parse(formattedDate);
             sub = new SimpleDateFormat("MMM-dd");
-            txtHome.setTextColor(Color.parseColor("#ffffff"));
+            txtHome.setTextColor(Color.parseColor("#F44336"));
             txtCustomRangeSub.setText(sub.format(date));
-            txtHomeSub.setText("current location");
         } catch (Exception ex) {
 
         }
@@ -297,28 +298,28 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     } else if (txtHome.getText().toString().equals(erm)) {
 
                         txtHome.setTextColor(Color.parseColor("#F44336"));
-                        txtHomeSub.setText("report locations");
+                       // txtHomeSub.setText("report locations");
                         category = "home";
                         new PopulateChartTask(context).execute();
                     } else if (txtReport.getText().toString().equals(erm)) {
 
                         txtReport.setTextColor(Color.parseColor("#F44336"));
-                        txtReportSub.setText("current location");
+                        //txtReportSub.setText("current location");
                         category = "Report";
                         new PopulateChartTask(context).execute();
                     } else if (txtSettle.getText().toString().equals(erm)) {
                         txtSettle.setTextColor(Color.parseColor("#F44336"));
-                        txtSettleSub.setText("current location");
+                        //txtSettleSub.setText("current location");
                         category = "Settle";
                         new PopulateChartTask(context).execute();
                     } else if (txtHistory.getText().toString().equals(erm)) {
                         txtHistory.setTextColor(Color.parseColor("#F44336"));
-                        txtHistorySub.setText("current location");
+                        //txtHistorySub.setText("current location");
                         category = "History";
                         new PopulateChartTask(context).execute();
                     } else if (txtSetting.getText().toString().equals(erm)) {
                         txtSetting.setTextColor(Color.parseColor("#F44336"));
-                        txtSettingSub.setText("current location");
+                        //txtSettingSub.setText("current location");
                         category = "Setting";
                         new PopulateChartTask(context).execute();
                     } else if (txtLogout.getText().toString().equals(erm)) {
@@ -355,7 +356,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
         try {
 
-
+            category = "home";
             new PopulateChartTask(context).execute();
         } catch (Exception ex) {
             showMessage(ex.toString());
@@ -365,14 +366,19 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 3) {
-            if(resultCode == RESULT_OK) {
-                //String strEditText = data.getStringExtra("editTextValue");
-                new PopulateChartTask(context).execute();
-            }
+        if(resultCode == RESULT_CANCELED){
+            category = "home";
+            new PopulateChartTask(context).execute();
+            return;
         }
+        if (requestCode == 4) {
+            iRadius = Integer.parseInt(data.getStringExtra("intRadius"));
+        }
+
+        category = "home";
+        new PopulateChartTask(context).execute();
     }
 
     public void onMapSearch(View view) {
@@ -639,7 +645,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                 txtHomeSub.setText("current location");
                 Intent i = new Intent(this   , Activity_SettleFeed.class);
                 i.putExtra("reportid", myreportid);
-                startActivity(i);
+                startActivityForResult(i, 7);
                 invalidateOptionsMenu();
                 return true;
             } catch (Exception ex) {
@@ -705,7 +711,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     case "Setting":
                         Intent iSetting = new Intent(mContext, Activity_Setting.class);
 
-                        startActivity(iSetting);
+                        startActivityForResult(iSetting,4);
                         break;
                     case "Report":
                         Intent i = new Intent(mContext, Activity_Report.class);
@@ -715,13 +721,13 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     case "Settle":
                         Intent ii = new Intent(mContext, Activity_Settle.class);
 
-                        startActivity(ii);
+                        startActivityForResult(ii, 5);
                         break;
                     case "History":
 
                         Intent iii = new Intent(mContext, Activity_History.class);
 
-                        startActivity(iii);
+                        startActivityForResult(iii, 6);
 
                         break;
 
@@ -824,7 +830,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         LatLng latlng = new LatLng(Double.parseDouble(f[0]), Double.parseDouble(f[1]));
                         if(e.getUserId() == Integer.parseInt(accounts[0].name)){
 
-                        }else if(distance(myLatLng.latitude,myLatLng,longitude,latlng.latitude,latlng.longitude,'K') <= 50){
+                        }else if(distance(myLatLng.latitude,myLatLng,longitude,latlng.latitude,latlng.longitude,'K') <= iRadius){
 
                             Report info = new Report();
                             info.setSubject("Subject : " + e.getSubject() );

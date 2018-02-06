@@ -15,13 +15,17 @@ public class Message {
     @JsonProperty("content")
     private  String content;
 
+    @JsonProperty("radius")
+    private  int radius;
+
     public Message(){
 
     }
 
-    public Message(long id, String content) {
+    public Message(long id, String content, int radius) {
         this.id = id;
         this.content = content;
+        this.radius = radius;
     }
 
     public long getId() {
@@ -30,6 +34,10 @@ public class Message {
 
     public String getContent() {
         return content;
+    }
+
+    public int getRadius() {
+        return radius;
     }
 
 }

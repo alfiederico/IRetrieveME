@@ -356,6 +356,7 @@ public class MainActivity extends Activity {
 
 
                     Intent i = new Intent(mContext, Activity_Dashboard.class);
+                    i.putExtra("iRadius",message.getRadius());
                     mContext.startActivity(i);
                 }
                 else if(message != null && message.getContent().equals("activate") ){
