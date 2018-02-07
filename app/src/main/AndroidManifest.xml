@@ -2,23 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cloud.iretrieve.com.iretrieve">
 
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="22" />
 
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
         android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-
     <uses-permission
         android:name="android.permission.MANAGE_ACCOUNTS"
         android:maxSdkVersion="22" />
-
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="22" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -27,11 +27,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -40,85 +38,80 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_Dashboard"
+            android:name=".Activity_Dashboard"
             android:label="@string/title_activity_activity__dashboard"
             android:launchMode="singleTask"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.MainActivity"
-            android:theme="@style/Dashboard"
-         >
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud.iretrieve.com.iretrieve.MainActivity" />
         </activity>
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_Registration"
-            android:theme="@style/Dashboard"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.MainActivity"
-            android:label="@string/title_activity_register" >
-        </activity>
+            android:name=".Activity_Registration"
+            android:label="@string/title_activity_register"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Dashboard"></activity>
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_ForgotPassword"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.MainActivity"
-            android:theme="@style/Dashboard"
-            android:label="@string/title_activity_activity__forgot_password" >
-        </activity>
+            android:name=".Activity_ForgotPassword"
+            android:label="@string/title_activity_activity__forgot_password"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Dashboard"></activity>
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_Report"
+            android:name=".Activity_Report"
             android:label="@string/title_activity_report"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.Activity_Dashboard"
-            android:theme="@style/Dashboard"
-         >
-
-        </activity>
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard"></activity>
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_Settle"
+            android:name=".Activity_Settle"
             android:label="@string/title_activity_settle"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.Activity_Dashboard"
-            android:theme="@style/Dashboard"
-          >
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
         </activity>
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_History"
+            android:name=".Activity_History"
             android:label="@string/title_activity_history"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.Activity_Dashboard"
-            android:theme="@style/Dashboard"
-          >
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
         </activity>
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_Setting"
+            android:name=".Activity_Setting"
             android:label="@string/title_activity_setting"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.Activity_Dashboard"
-            android:theme="@style/Dashboard"
-         >
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
         </activity>
-
+        <activity
+            android:name=".Activity_SettleFeed"
+            android:label="@string/title_activity_settlefeed"
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
+        </activity>
 
         <activity
-            android:name="cloud.iretrieve.com.iretrieve.Activity_SettleFeed"
-            android:label="@string/title_activity_settlefeed"
-            android:parentActivityName="cloud.iretrieve.com.iretrieve.Activity_Dashboard"
-            android:theme="@style/Dashboard"
-            >
+            android:name=".Activity_Statistic"
+            android:label="@string/title_activity_statistics"
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
         </activity>
-
 
         <service
-            android:name="cloud.iretrieve.com.iretrieve.AuthenticatorService"
+            android:name=".AuthenticatorService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -129,8 +122,6 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" /> <!-- We haven't defined this -->
         </service>
-
-
 
     </application>
 

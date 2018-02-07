@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/layoutDashboard"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+
+    android:background="#E3F2FD"
+
+android:orientation="vertical"
+tools:context="cloud.iretrieve.com.iretrieve.Activity_Statistic">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/scrollView"
+        android:background="#E3F2FD"
+        >
+        <LinearLayout
+
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="top|center"
+            android:orientation="vertical"
+            android:background="#E3F2FD"
+            >
+
+            <LinearLayout
+                android:id="@+id/lvBody"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top|center"
+                android:orientation="vertical"
+                android:background="#E3F2FD"
+                >
+                <com.github.mikephil.charting.charts.LineChart
+                    xmlns:chart="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/linechart1"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/roundrect"
+                    android:layout_marginTop="12dp"
+                    >
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/chart1"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+
+                        />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+</RelativeLayout>
+
+
+
+
+

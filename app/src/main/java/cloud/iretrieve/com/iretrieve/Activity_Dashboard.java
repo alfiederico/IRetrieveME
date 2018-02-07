@@ -90,6 +90,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     TextView txtSettle;
     TextView txtHistory;
     TextView txtSetting;
+    TextView txtStatistics;
     TextView txtLogout;
 
 
@@ -99,6 +100,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     TextView txtSettleSub;
     TextView txtHistorySub;
     TextView txtSettingSub;
+    TextView txtStatisticSub;
     TextView txtLogoutSub;
 
     HorizontalScrollView hsView;
@@ -195,6 +197,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtHistory = (TextView) findViewById(R.id.txtHistory);
         txtSetting = (TextView) findViewById(R.id.txtSetting);
         txtLogout = (TextView) findViewById(R.id.txtLogout);
+        txtStatistics = (TextView) findViewById(R.id.txtStatistics);
 
         txtCustomRangeSub = (TextView) findViewById(R.id.txtCustomRangeSub);
         txtHomeSub = (TextView) findViewById(R.id.txtHomeSub);
@@ -202,6 +205,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettleSub = (TextView) findViewById(R.id.txtSettleSub);
         txtHistorySub = (TextView) findViewById(R.id.txtHistorySub);
         txtSettingSub = (TextView) findViewById(R.id.txtSettingSub);
+        txtStatisticSub = (TextView) findViewById(R.id.txtStatisticsSub);
         txtLogoutSub = (TextView) findViewById(R.id.txtLogoutSub);
 
 
@@ -235,6 +239,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettle.setWidth(screen.x / 3);
         txtHistory.setWidth(screen.x / 3);
         txtSetting.setWidth(screen.x / 3);
+        txtStatistics.setWidth(screen.x / 3);
         txtLogout.setWidth(screen.x / 3);
 
 
@@ -244,6 +249,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettleSub.setWidth(screen.x / 3);
         txtHistorySub.setWidth(screen.x / 3);
         txtSettingSub.setWidth(screen.x / 3);
+        txtStatisticSub.setWidth(screen.x / 3);
         txtLogoutSub.setWidth(screen.x / 3);
 
 
@@ -261,6 +267,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettleSub.setOnClickListener(this);
         txtHistorySub.setOnClickListener(this);
         txtSettingSub.setOnClickListener(this);
+        txtStatisticSub.setOnClickListener(this);
         txtLogoutSub.setOnClickListener(this);
 
 
@@ -321,6 +328,11 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         txtSetting.setTextColor(Color.parseColor("#F44336"));
                         //txtSettingSub.setText("current location");
                         category = "Setting";
+                        new PopulateChartTask(context).execute();
+                    } else if (txtStatistics.getText().toString().equals(erm)) {
+                        txtStatistics.setTextColor(Color.parseColor("#F44336"));
+                        //txtSettingSub.setText("current location");
+                        category = "Statistics";
                         new PopulateChartTask(context).execute();
                     } else if (txtLogout.getText().toString().equals(erm)) {
                         NavUtils.navigateUpFromSameTask((Activity) context);
@@ -550,13 +562,16 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettle.setTextColor(Color.parseColor("#ffffff"));
         txtHistory.setTextColor(Color.parseColor("#ffffff"));
         txtSetting.setTextColor(Color.parseColor("#ffffff"));
+        txtStatistics.setTextColor(Color.parseColor("#ffffff"));
         txtLogout.setTextColor(Color.parseColor("#ffffff"));
+
         txtCustomRangeSub.setText("");
         txtHomeSub.setText("");
         txtReportSub.setText("");
         txtSettleSub.setText("");
         txtHistorySub.setText("");
         txtSettingSub.setText("");
+        txtStatisticSub.setText("");
         txtLogoutSub.setText("");
 
     }
@@ -598,6 +613,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         top250.add("Settle");
         top250.add("History");
         top250.add("Setting");
+        top250.add("Statistics");
         top250.add("Logout");
 
         List<String> top251 = new ArrayList<String>();
@@ -642,7 +658,6 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         if (id == SAMPLE2_ID && myreportid != 0) {
 
             try {
-                txtHomeSub.setText("current location");
                 Intent i = new Intent(this   , Activity_SettleFeed.class);
                 i.putExtra("reportid", myreportid);
                 startActivityForResult(i, 7);
@@ -729,6 +744,11 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
                         startActivityForResult(iii, 6);
 
+                        break;
+                    case "Statistics":
+                        Intent iStatistics = new Intent(mContext, Activity_Statistic.class);
+
+                        startActivityForResult(iStatistics,9);
                         break;
 
 

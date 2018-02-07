@@ -194,6 +194,33 @@
                 android:weightSum="2">
 
                 <TextView
+                    android:id="@+id/txtStatistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="Statistics"
+                    android:textColor="#ffffff"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/txtStatisticsSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="#ffffff"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <TextView
                     android:id="@+id/txtLogout"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
