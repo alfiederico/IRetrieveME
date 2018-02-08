@@ -1,11 +1,18 @@
 package cloud.iretrieve.com.iretrieve;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,22 +38,38 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Utils;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import org.joda.time.DateTime;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import cloud.iretrieve.com.iretrieve.domain.History;
 import cloud.iretrieve.com.iretrieve.model.LineSet;
 
 public class Activity_Statistic extends Activity {
 
-
-
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+    Context context = null;
+    PieChart mPieChart;
+    LineChart mChart1;
+    ArrayList<Integer> colors;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity__statistic);
 
-            ArrayList<Integer> colors = new ArrayList<Integer>();
+            context = this;
+
+
+            colors = new ArrayList<Integer>();
 
             for (int c : ColorTemplate.VORDIPLOM_COLORS)
                 colors.add(c);
@@ -65,7 +88,7 @@ public class Activity_Statistic extends Activity {
 
             colors.add(ColorTemplate.getHoloBlue());
 
-            PieChart mPieChart = (PieChart) findViewById(R.id.chart1);
+            mPieChart = (PieChart) findViewById(R.id.chart1);
 
             mPieChart.setUsePercentValues(true);
 
@@ -96,26 +119,6 @@ public class Activity_Statistic extends Activity {
             mPieChart.setRotationEnabled(true);
             mPieChart.setHighlightPerTapEnabled(true);
 
-            ArrayList<PieEntry> yVals1 = new ArrayList<PieEntry>();
-
-            yVals1.add(new PieEntry(30, "Lost"));
-            yVals1.add(new PieEntry(70, "Found"));
-
-
-            PieDataSet dataSet = new PieDataSet(yVals1,"");
-            dataSet.setSliceSpace(2f);
-            dataSet.setSelectionShift(5f);
-            dataSet.setColors(colors);
-
-            PieData data = new PieData(dataSet);
-            data.setValueFormatter(new PercentFormatter());
-            data.setValueTextSize(11f);
-            data.setValueTextColor(Color.parseColor("#26A69A"));
-            //data.setValueTypeface(tf);
-            mPieChart.setData(data);
-            Description piedesc = new Description();
-            piedesc.setText("2018");
-            mPieChart.setDescription(piedesc);
 
             Legend l = mPieChart.getLegend();
             l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
@@ -124,7 +127,7 @@ public class Activity_Statistic extends Activity {
             l.setYOffset(0f);
 
 
-            LineChart mChart1 = (LineChart) findViewById(R.id.linechart1);
+            mChart1 = (LineChart) findViewById(R.id.linechart1);
 
 
 
@@ -143,7 +146,7 @@ public class Activity_Statistic extends Activity {
             // enable scaling and dragging
             mChart1.setDragEnabled(true);
             mChart1.setScaleEnabled(true);
-;
+            ;
             // mChart.setScaleXEnabled(true);
             // mChart.setScaleYEnabled(true);
 
@@ -154,21 +157,11 @@ public class Activity_Statistic extends Activity {
             mChart1.getAxisRight().setEnabled(false);
 
 
+            new GetHistoryTask(context).execute();
 
 
 
 
-            ArrayList<ILineDataSet> dataSets1 = new ArrayList<ILineDataSet>();
-            dataSets1.add(getLineSet("2018",colors.get(0))); // add the datasets
-
-
-
-            Description desc = new Description();
-            desc.setText("X = Lost, Y = Found");
-            // create a data object with the datasets
-            LineData data1 = new LineData(dataSets1);
-            mChart1.setData(data1);
-            mChart1.setDescription(desc);
 
 
 
@@ -177,36 +170,7 @@ public class Activity_Statistic extends Activity {
         }
     }
 
-    private LineDataSet getLineSet(String f, Integer g){
-        ArrayList<Entry> values = new ArrayList<Entry>();
-        for (int i = 0; i < 12; i++) {
 
-            float val = (float) (Math.random() * 100) + 3;
-            values.add(new Entry(i, val));
-        }
-
-        LineDataSet set1 = new LineDataSet(values,f);
-        set1.setDrawIcons(false);
-
-        // set the line to be drawn like this "- - - - - -"
-        set1.enableDashedLine(10f, 5f, 0f);
-        set1.enableDashedHighlightLine(10f, 5f, 0f);
-        set1.setColor(g);
-        set1.setCircleColor(g);
-        set1.setLineWidth(1f);
-        set1.setCircleRadius(3f);
-        set1.setDrawCircleHole(false);
-        set1.setValueTextSize(9f);
-        set1.setDrawFilled(true);
-        set1.setFormLineWidth(1f);
-        set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
-        set1.setFormSize(15.f);
-
-
-        set1.setFillColor(Color.BLACK);
-
-        return set1;
-    }
 
     private SpannableString generateCenterSpannableText(String e) {
 
@@ -224,6 +188,204 @@ public class Activity_Statistic extends Activity {
         diag.setTitle("Message");
         diag.setMessage(e);
         diag.show();
+    }
+
+    private class GetHistoryTask extends AsyncTask<Void,Void,History[]> {
+
+
+        private Context mContext = null;
+        private ProgressDialog pDlg = null;
+
+        public GetHistoryTask(Context mContext){
+            this.mContext = mContext;
+        }
+
+        @Override
+        protected History[] doInBackground(Void... params) {
+            try{
+                AccountManager accountManager = AccountManager.get(mContext);
+                Account[] accounts = accountManager.getAccountsByType("IRetrieve");
+
+                final String url = SERVICE_URL + "/mobile/historystats?id=0";
+
+                RestTemplate restTemplate = new RestTemplate();
+                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+
+
+                List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
+                supportedMediaTypes.add(new MediaType("text", "plain"));
+                supportedMediaTypes.add(new MediaType("application", "json"));
+                converter.setSupportedMediaTypes(supportedMediaTypes);
+
+                restTemplate.getMessageConverters().add(converter);
+                History[] histories = restTemplate.getForObject(url,History[].class);
+
+
+
+                return histories;
+            }catch(Exception ex){
+                showMessage(ex.toString());
+                return null;
+            }
+
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            try {
+                // hideKeyboard();
+                showProgressDialog();
+            } catch (Exception ex) {
+                showMessage(ex.toString());
+            }
+        }
+
+        @Override
+        protected void onPostExecute(History[] histories) {
+            try{
+                pDlg.dismiss();
+                if(histories == null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Settle Failed");
+                    builder.setMessage("Report item not found. Report item first.. Please try again.");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            NavUtils.navigateUpFromSameTask((Activity) mContext);
+                        }
+                    });
+                    builder.show();
+                }else{
+
+                    ArrayList<ILineDataSet> dataSets1 = new ArrayList<ILineDataSet>();
+
+                    int isettle = 0;
+                    ArrayList<Entry> values = new ArrayList<Entry>();
+                    for (int i = 0; i < 12; i++) {
+                        int counter = 0;
+                        for(History e: histories){
+
+                            try {
+                                String[] date = e.getDate().split("-");
+
+                                if(Integer.parseInt(date[1]) == (i + 1) && e.getType().equals("LOST")){
+                                    counter = counter + 1;
+                                    isettle += 1;
+                                }
+
+                            } catch (Exception exc) {
+
+                            }
+                        }
+
+                        values.add(new Entry(i, counter));
+                    }
+
+                    LineDataSet set1 = new LineDataSet(values,"# of Settle per month");
+                    set1.setDrawIcons(false);
+
+                    // set the line to be drawn like this "- - - - - -"
+                    set1.enableDashedLine(10f, 5f, 0f);
+                    set1.enableDashedHighlightLine(10f, 5f, 0f);
+                    set1.setColor(colors.get(0));
+                    set1.setCircleColor(colors.get(0));
+                    set1.setLineWidth(1f);
+                    set1.setCircleRadius(3f);
+                    set1.setDrawCircleHole(false);
+                    set1.setValueTextSize(9f);
+                    set1.setDrawFilled(true);
+                    set1.setFormLineWidth(1f);
+                    set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+                    set1.setFormSize(15.f);
+
+
+                    set1.setFillColor(Color.BLACK);
+
+                    dataSets1.add(set1); // add the datasets
+
+
+
+                    Description desc = new Description();
+                    desc.setText("X = Month, Y = Settle");
+                    // create a data object with the datasets
+                    LineData data1 = new LineData(dataSets1);
+                    mChart1.setData(data1);
+                    mChart1.setDescription(desc);
+                    mChart1.invalidate();
+
+
+                    int iLost = 0;
+                    for(History e: histories){
+
+                        try {
+                            if(e.getType().equals("-LOST")){
+                                iLost = iLost + 1;
+                            }
+
+                        } catch (Exception exc) {
+
+                        }
+                    }
+
+                    ArrayList<PieEntry> yVals1 = new ArrayList<PieEntry>();
+                    int iTot = isettle + iLost;
+                    if(iTot > 0){
+                        if(iLost > 0){
+                            yVals1.add(new PieEntry((iTot / iLost) * 100, "Lost"));
+                        }else{
+                            yVals1.add(new PieEntry(0, "Lost"));
+                        }
+
+                        if(isettle > 0){
+                            yVals1.add(new PieEntry((iTot / isettle) * 100, "Found"));
+                        }else{
+                            yVals1.add(new PieEntry(0, "Found"));
+                        }
+                    }else{
+                        yVals1.add(new PieEntry(0, "Lost"));
+                        yVals1.add(new PieEntry(0, "Found"));
+                    }
+
+                    PieDataSet dataSet = new PieDataSet(yVals1,"");
+                    dataSet.setSliceSpace(2f);
+                    dataSet.setSelectionShift(5f);
+                    dataSet.setColors(colors);
+
+
+                    PieData data = new PieData(dataSet);
+                    data.setValueFormatter(new PercentFormatter());
+                    data.setValueTextSize(11f);
+                    data.setValueTextColor(Color.parseColor("#26A69A"));
+
+                    Description piedesc = new Description();
+                    piedesc.setText(new Integer(iTot).toString() + " total items");
+                    mPieChart.setDescription(piedesc);
+
+                    //data.setValueTypeface(tf);
+                    mPieChart.setData(data);
+
+                    mPieChart.invalidate();
+
+
+
+
+                }
+            }catch(Exception ex){
+                showMessage(ex.toString());
+            }
+        }
+
+
+
+        private void showProgressDialog() {
+            pDlg = new ProgressDialog(mContext);
+            pDlg.setMessage("Sending");
+            pDlg.setProgressDrawable(mContext.getWallpaper());
+            pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDlg.setCancelable(false);
+            pDlg.show();
+
+        }
     }
 
 }

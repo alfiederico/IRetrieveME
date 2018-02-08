@@ -314,7 +314,7 @@ public class Activity_History extends Activity {
                 if(histories == null){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Settle Failed");
-                    builder.setMessage("Report item not found. Report item first.. Please try again.");
+                    builder.setMessage("History item not found. Report item first.. Please try again.");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             NavUtils.navigateUpFromSameTask((Activity) mContext);
