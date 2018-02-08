@@ -325,26 +325,51 @@ public class Activity_Statistic extends Activity {
 
                     ArrayList<PieEntry> yVals1 = new ArrayList<PieEntry>();
                     int iTot = isettle + iLost;
-                    if(iTot > 0){
-                        if(iLost > 0){
-                            yVals1.add(new PieEntry((iTot / iLost) * 100, "Found"));
-                        }else{
-                            yVals1.add(new PieEntry(0, "Found"));
-                        }
 
-                        if(isettle > 0){
-                            yVals1.add(new PieEntry((iTot / isettle) * 100, "Lost"));
+                    if(iLost == 0){
+                        if(iTot > 0){
+                            if(iLost > 0){
+                                yVals1.add(new PieEntry((iTot / iLost) * 100, "Lost"));
+                            }else{
+                                yVals1.add(new PieEntry(0, "Lost"));
+                            }
+
+                            if(isettle > 0){
+                                yVals1.add(new PieEntry((iTot / isettle) * 100, "Found"));
+                            }else{
+                                yVals1.add(new PieEntry(0, "Found"));
+                            }
                         }else{
                             yVals1.add(new PieEntry(0, "Lost"));
+                            yVals1.add(new PieEntry(0, "Found"));
                         }
                     }else{
-                        yVals1.add(new PieEntry(0, "Lost"));
-                        yVals1.add(new PieEntry(0, "Found"));
+                        if(iTot > 0){
+                            if(iLost > 0){
+                                yVals1.add(new PieEntry((iTot / iLost) * 100, "Found"));
+                            }else{
+                                yVals1.add(new PieEntry(0, "Found"));
+                            }
+
+                            if(isettle > 0){
+                                yVals1.add(new PieEntry((iTot / isettle) * 100, "Lost"));
+                            }else{
+                                yVals1.add(new PieEntry(0, "Lost"));
+                            }
+                        }else{
+                            yVals1.add(new PieEntry(0, "Lost"));
+                            yVals1.add(new PieEntry(0, "Found"));
+                        }
                     }
 
                     PieDataSet dataSet = new PieDataSet(yVals1,"");
                     dataSet.setSliceSpace(2f);
                     dataSet.setSelectionShift(5f);
+
+                    //ArrayList<Integer> colors1 = new ArrayList<Integer>();
+                    ////colors1.add(Color.GREEN);
+                    //colors1.add(Color.RED);
+
                     dataSet.setColors(colors);
 
 
