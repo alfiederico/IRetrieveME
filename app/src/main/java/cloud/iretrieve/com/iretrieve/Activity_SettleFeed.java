@@ -31,7 +31,7 @@ import java.util.List;
 public class Activity_SettleFeed extends Activity {
 
     public int myreportid = 0;
-    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

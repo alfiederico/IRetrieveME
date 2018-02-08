@@ -55,7 +55,7 @@ import cloud.iretrieve.com.iretrieve.model.LineSet;
 
 public class Activity_Statistic extends Activity {
 
-    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
     Context context = null;
     PieChart mPieChart;
     LineChart mChart1;
@@ -120,11 +120,7 @@ public class Activity_Statistic extends Activity {
             mPieChart.setHighlightPerTapEnabled(true);
 
 
-            Legend l = mPieChart.getLegend();
-            l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-            l.setXEntrySpace(7f);
-            l.setYEntrySpace(0f);
-            l.setYOffset(0f);
+
 
 
             mChart1 = (LineChart) findViewById(R.id.linechart1);
@@ -331,15 +327,15 @@ public class Activity_Statistic extends Activity {
                     int iTot = isettle + iLost;
                     if(iTot > 0){
                         if(iLost > 0){
-                            yVals1.add(new PieEntry((iTot / iLost) * 100, "Lost"));
+                            yVals1.add(new PieEntry((iTot / iLost) * 100, "Found"));
                         }else{
-                            yVals1.add(new PieEntry(0, "Lost"));
+                            yVals1.add(new PieEntry(0, "Found"));
                         }
 
                         if(isettle > 0){
-                            yVals1.add(new PieEntry((iTot / isettle) * 100, "Found"));
+                            yVals1.add(new PieEntry((iTot / isettle) * 100, "Lost"));
                         }else{
-                            yVals1.add(new PieEntry(0, "Found"));
+                            yVals1.add(new PieEntry(0, "Lost"));
                         }
                     }else{
                         yVals1.add(new PieEntry(0, "Lost"));
@@ -364,6 +360,12 @@ public class Activity_Statistic extends Activity {
                     //data.setValueTypeface(tf);
                     mPieChart.setData(data);
 
+                    Legend l = mPieChart.getLegend();
+                    l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+                    l.setXEntrySpace(7f);
+                    l.setYEntrySpace(0f);
+                    l.setYOffset(0f);
+
                     mPieChart.invalidate();
 
 
@@ -371,7 +373,7 @@ public class Activity_Statistic extends Activity {
 
                 }
             }catch(Exception ex){
-                showMessage(ex.toString());
+               // showMessage(ex.toString());
             }
         }
 

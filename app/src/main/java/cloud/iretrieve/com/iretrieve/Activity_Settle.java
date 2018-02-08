@@ -42,7 +42,7 @@ public class Activity_Settle extends Activity {
     EditText mReferenceID;
     Button btnReport;
     Context context = null;
-    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -195,7 +195,7 @@ public class Activity_Settle extends Activity {
 
                 return report;
             }catch(Exception ex){
-                showMessage(ex.toString());
+                //showMessage(ex.toString());
                 return null;
             }
 

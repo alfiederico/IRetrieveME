@@ -132,7 +132,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
 
     private static int iRadius = 50;
 
@@ -708,20 +708,24 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
                 switch(category){
                     case "home":
+                        try{
+                            final String url = SERVICE_URL + "/mobile/reports";
 
-                        final String url = SERVICE_URL + "mobile/reports";
-
-                        RestTemplate restTemplate = new RestTemplate();
-                        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+                            RestTemplate restTemplate = new RestTemplate();
+                            MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 
 
-                        List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
-                        supportedMediaTypes.add(new MediaType("text", "plain"));
-                        supportedMediaTypes.add(new MediaType("application", "json"));
-                        converter.setSupportedMediaTypes(supportedMediaTypes);
+                            List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
+                            supportedMediaTypes.add(new MediaType("text", "plain"));
+                            supportedMediaTypes.add(new MediaType("application", "json"));
+                            converter.setSupportedMediaTypes(supportedMediaTypes);
 
-                        restTemplate.getMessageConverters().add(converter);
-                        return restTemplate.getForObject(url, Report[].class);
+                            restTemplate.getMessageConverters().add(converter);
+                            return restTemplate.getForObject(url, Report[].class);
+                        }catch(Exception exw){
+                            return null;
+                        }
+
 
                     case "Setting":
                         Intent iSetting = new Intent(mContext, Activity_Setting.class);
