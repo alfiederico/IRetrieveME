@@ -175,19 +175,19 @@ public class Activity_History extends Activity {
             TextView txtDescription = (TextView) convertView.findViewById(R.id.txtDescription);
             TextView txtDate = (TextView) convertView.findViewById(R.id.txtDate);
             TextView txtPlace = (TextView) convertView.findViewById(R.id.txtPlace);
-            TextView txtLocation = (TextView) convertView.findViewById(R.id.txtLocation);
-            TextView txtSettleID = (TextView) convertView.findViewById(R.id.txtSettleID);
+            //TextView txtLocation = (TextView) convertView.findViewById(R.id.txtLocation);
+            //TextView txtSettleID = (TextView) convertView.findViewById(R.id.txtSettleID);
 
 
-            txtID.setText(new Integer(childText.getId()).toString());
-            txtTypeID.setText(new Integer(childText.getTypeId()).toString());
-            txtType.setText(new String(childText.getType()).toString());
-            txtSubject.setText(new String(childText.getSubject()).toString());
-            txtDescription.setText(new String(childText.getDescription()).toString());
-            txtDate.setText(new String(childText.getDate()).toString());
-            txtPlace.setText(new String(childText.getPlace()).toString());
-            txtLocation.setText(new String(childText.getLocation()).toString());
-            txtSettleID.setText(new Integer(childText.getSettleId()).toString());
+            txtID.setText("History ID : " + new Integer(childText.getId()).toString());
+            txtTypeID.setText("Reference ID : " + new Integer(childText.getTypeId()).toString());
+            txtType.setText("Type : " + new String(childText.getType()).toString());
+            txtSubject.setText("Subject : " + new String(childText.getSubject()).toString());
+            txtDescription.setText("Description : " + new String(childText.getDescription()).toString());
+            txtDate.setText("Date : " + new String(childText.getDate()).toString());
+            txtPlace.setText("Place : " + new String(childText.getPlace()).toString());
+           // txtLocation.setText("Geocode : " +  new String(childText.getLocation()).toString());
+            //txtSettleID.setText("Settle ID" + new Integer(childText.getSettleId()).toString());
 
             return convertView;
         }
@@ -328,7 +328,7 @@ public class Activity_History extends Activity {
                     int itemCount = 0;
                     int headerCount = 0;
                     for(History e: histories){
-                        listDataHeader.add(new Integer(headerCount).toString());
+                        listDataHeader.add(e.getDate());
                         ArrayList<History> arrHistories = new ArrayList<History>();
                         arrHistories.add(e);
                         listDataChild.put(listDataHeader.get(headerCount), arrHistories);

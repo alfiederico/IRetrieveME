@@ -1,16 +1,21 @@
 package cloud.iretrieve.com.iretrieve;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import cloud.iretrieve.com.iretrieve.domain.Message;
 import cloud.iretrieve.com.iretrieve.domain.Order;
 import cloud.iretrieve.com.iretrieve.domain.OrderList;
 import cloud.iretrieve.com.iretrieve.domain.Report;
@@ -173,6 +179,45 @@ public class Activity_SettleFeed extends Activity {
                     final ListView listview = (ListView) findViewById(R.id.listview);
                     final MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(mContext,arrReport);
                     listview.setAdapter(adapter);
+
+                     AdapterView.OnItemClickListener listPairedClickItem = new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+                            final TextView id = (TextView) arg1.findViewById(R.id.id);
+
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+                            builder.setMessage("Settle: " + id.getText().toString());
+
+                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    dialog.dismiss();
+                                    new SetReportTask(mContext, id.getText().toString().replace("ID : ","")).execute();
+                                }
+                            });
+
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            builder.show();
+                        }
+                    };
+
+                    listview.setOnItemClickListener(listPairedClickItem);
+
+
                 }
 
             } catch (Exception ex) {
@@ -192,5 +237,100 @@ public class Activity_SettleFeed extends Activity {
         }
 
 
+    }
+
+    private class SetReportTask extends AsyncTask<Void,Void,Message>{
+
+
+        private Context mContext = null;
+        private ProgressDialog pDlg = null;
+        private String id = "";
+
+        public SetReportTask(Context mContext, String id){
+            this.mContext = mContext;
+            this.id  = id;
+        }
+
+        @Override
+        protected Message doInBackground(Void... params) {
+            try{
+                AccountManager accountManager = AccountManager.get(mContext);
+                Account[] accounts = accountManager.getAccountsByType("IRetrieve");
+
+                final String url = SERVICE_URL + "/mobile/isettle?isettle=" + id + "&userid=" + accounts[0].name ;
+
+                RestTemplate restTemplate = new RestTemplate();
+                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+
+
+                List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
+                supportedMediaTypes.add(new MediaType("text", "plain"));
+                supportedMediaTypes.add(new MediaType("application", "json"));
+                converter.setSupportedMediaTypes(supportedMediaTypes);
+
+                restTemplate.getMessageConverters().add(converter);
+                Message message = restTemplate.getForObject(url,Message.class);
+
+
+
+                return message;
+            }catch(Exception ex){
+                showMessage(ex.toString());
+                return null;
+            }
+
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            try {
+                // hideKeyboard();
+                showProgressDialog();
+            } catch (Exception ex) {
+                showMessage(ex.toString());
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Message message) {
+            try{
+                pDlg.dismiss();
+                if(message.getId() == 3){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Settle Failed");
+                    builder.setMessage(message.getContent());
+                    builder.setPositiveButton("OK", null);
+                    builder.show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Settle Successful");
+                    builder.setMessage(message.getContent());
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            NavUtils.navigateUpFromSameTask((Activity) mContext);
+                            //Intent intent = new Intent();
+                            //intent.putExtra("intRadius", dummy);
+                            //setResult(5, intent);
+                            // finish();
+                        }
+                    });
+                    builder.show();
+
+                }
+            }catch(Exception ex){
+                showMessage(ex.toString());
+            }
+        }
+
+        private void showProgressDialog() {
+            pDlg = new ProgressDialog(mContext);
+            pDlg.setMessage("Sending");
+            pDlg.setProgressDrawable(mContext.getWallpaper());
+            pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDlg.setCancelable(false);
+            pDlg.show();
+
+        }
     }
 }

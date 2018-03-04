@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -31,11 +32,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,6 +65,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import cloud.iretrieve.com.iretrieve.domain.Article;
+import cloud.iretrieve.com.iretrieve.domain.History;
+import cloud.iretrieve.com.iretrieve.domain.Message;
 import cloud.iretrieve.com.iretrieve.domain.Report;
 
 
@@ -77,6 +85,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMapLongClickListener, ExpandableListView.OnGroupExpandListener, Button.OnClickListener {
     List_ExpandableAdapter listAdapter;
+    ReportList_ExpandableAdapter listReportAdapter;
     ExpandableListView expListView;
 
     List<String> listDataHeader;
@@ -136,6 +145,12 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private static int iRadius = 50;
 
+    ExpandableListView expReports;
+
+    List<String> listReportDataHeader;
+    HashMap<String, List<Report>> listReportDataChild;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +182,50 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
+        expReports = (ExpandableListView) findViewById(R.id.lvExpReports);
+
+        expReports
+                .setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                    @Override
+                    public boolean onChildClick(
+                            ExpandableListView parent, View v,
+                            int groupPosition, int childPosition,
+                            long id) {
+
+                        final TextView txtID = (TextView) v.findViewById(R.id.txtID);
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                        builder.setMessage("Settle: " + txtID.getText().toString());
+
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                                new SetReportTask(context, txtID.getText().toString().replace("ID : ","")).execute();
+                            }
+                        });
+
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+
+                                dialog.dismiss();
+                            }
+                        });
+
+                        builder.show();
+
+                        return false;
+                    }
+                });
+
+
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.layoutDashboard);
 
         //LinearLayout linearBody = (LinearLayout) findViewById(R.id.lvBody);
@@ -175,6 +234,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         prepareListData();
 
         listAdapter = new List_ExpandableAdapter(this, listDataHeader, listDataChild);
+
+        listReportAdapter = new ReportList_ExpandableAdapter(this, listReportDataHeader, listReportDataChild);
 
         expListView.setOnGroupExpandListener(this);
 
@@ -376,6 +437,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
 
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -692,6 +755,125 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         }
     }
 
+    public class ReportList_ExpandableAdapter extends BaseExpandableListAdapter {
+
+        private Context _context;
+        private List<String> _listDataHeader; // header titles
+        // child data in format of header title, child title
+        private HashMap<String, List<Report>> _listDataChild;
+        public boolean bReset = false;
+        public Date range1;
+        public Date range2;
+
+
+        public ReportList_ExpandableAdapter(Context context, List<String> listDataHeader,
+                                             HashMap<String, List<Report>> listChildData) {
+            this._context = context;
+            this._listDataHeader = listDataHeader;
+            this._listDataChild = listChildData;
+        }
+
+
+        @Override
+        public Object getChild(int groupPosition, int childPosititon) {
+            return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+                    .get(childPosititon);
+        }
+
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+
+
+        @Override
+        public View getChildView(int groupPosition, final int childPosition,
+                                 boolean isLastChild, View convertView, ViewGroup parent) {
+
+            final Report childText = (Report) getChild(groupPosition, childPosition);
+            LayoutInflater infalInflater = (LayoutInflater) this._context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.list_reports_description, null);
+
+            TextView txtID = (TextView) convertView.findViewById(R.id.txtID);
+            TextView txtType = (TextView) convertView.findViewById(R.id.txtType);
+            TextView txtSubject = (TextView) convertView.findViewById(R.id.txtSubject);
+            TextView txtDescription = (TextView) convertView.findViewById(R.id.txtDescription);
+            TextView txtDate = (TextView) convertView.findViewById(R.id.txtDate);
+            TextView txtPlace = (TextView) convertView.findViewById(R.id.txtPlace);
+            TextView txtContact = (TextView) convertView.findViewById(R.id.txtContact);
+
+
+
+            txtID.setText("ID : " + new Integer(childText.getId()).toString());
+
+            txtType.setText("Type : " + new String(childText.getType()).toString());
+            txtSubject.setText("Subject : " + new String(childText.getSubject()).toString());
+            txtDescription.setText("Description : " + new String(childText.getDescription()).toString());
+            txtDate.setText("Date : " + new String(childText.getDate()).toString());
+            txtPlace.setText("Place : " + new String(childText.getPlace()).toString());
+            txtContact.setText("Contact : " + new String(childText.getContact()).toString());
+
+
+            return convertView;
+        }
+
+        public void showMessage(String e) {
+            AlertDialog.Builder diag = new AlertDialog.Builder(this._context);
+            diag.setTitle("Message");
+            diag.setMessage(e);
+            diag.show();
+        }
+
+        @Override
+        public int getChildrenCount(int groupPosition) {
+            return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+                    .size();
+        }
+
+        @Override
+        public Object getGroup(int groupPosition) {
+            return this._listDataHeader.get(groupPosition);
+        }
+
+        @Override
+        public int getGroupCount() {
+            return this._listDataHeader.size();
+        }
+
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        @Override
+        public View getGroupView(int groupPosition, boolean isExpanded,
+                                 View convertView, ViewGroup parent) {
+
+            String headerTitle = (String) getGroup(groupPosition);
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.list_namesubcat_description, null);
+            }
+
+            TextView lblListHeader = (TextView) convertView.findViewById(R.id.txtListItem);
+            lblListHeader.setText(headerTitle);
+
+            return convertView;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
+    }
+
     private class PopulateChartTask extends AsyncTask<Void, Void, Report[]> {
         private Context mContext = null;
         private ProgressDialog pDlg = null;
@@ -805,6 +987,32 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     AccountManager accountManager = AccountManager.get(mContext);
                     Account[] accounts = accountManager.getAccountsByType("IRetrieve");
 
+                    listReportDataHeader = new ArrayList<String>();
+                    listReportDataChild = new HashMap<String, List<Report>>();
+                    int itemCount = 0;
+                    int headerCount = 0;
+                    for(Report e: reports){
+                        if(e.getUserId() == Integer.parseInt(accounts[0].name)){
+                            continue;
+                        }
+                        listReportDataHeader.add(e.getSubject().toUpperCase() + "(" + e.getDate() + ")");
+                        ArrayList<Report> arrReports = new ArrayList<Report>();
+                        arrReports.add(e);
+                        listReportDataChild.put(listReportDataHeader.get(headerCount), arrReports);
+                        headerCount+=1;
+                    }
+
+                    listReportAdapter = new ReportList_ExpandableAdapter(mContext, listReportDataHeader, listReportDataChild);
+
+                    // setting list adapter
+                    expReports.setAdapter(listReportAdapter);
+
+                    setListViewHeightBasedOnChildren(expReports);
+
+                    for(int i=0; i < listReportAdapter.getGroupCount(); i++)
+                        expReports.expandGroup(i);
+
+
                     mMap.clear();
 
                     LatLngBounds.Builder bounds = new LatLngBounds.Builder();
@@ -830,11 +1038,17 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
                             myLatLng = latlng;
 
+                            if(e.getType().equals("FOUND")){
+                                Marker m = mMap.addMarker(new MarkerOptions().position(myLatLng).title(new Integer(e.getId()).toString()).icon(BitmapDescriptorFactory.fromResource(R.drawable.found)).snippet(e.getType()));
 
-                            Marker m = mMap.addMarker(new MarkerOptions().position(myLatLng).title(new Integer(e.getId()).toString()).icon(BitmapDescriptorFactory
-                                    .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).snippet(e.getType()));
+                                m.setTag(info);
+                            }else{
+                                Marker m = mMap.addMarker(new MarkerOptions().position(myLatLng).title(new Integer(e.getId()).toString()).icon(BitmapDescriptorFactory.fromResource(R.drawable.lost)).snippet(e.getType()));
 
-                            m.setTag(info);
+                                m.setTag(info);
+                            }
+
+
 
                             bounds.include(new LatLng(Double.parseDouble(f[0]), Double.parseDouble(f[1])));
 
@@ -864,11 +1078,11 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
                             if(e.getType().equals("FOUND")){
                                 Marker m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                        .fromResource(R.drawable.found)));
 
                                 m.setTag(info);
                             }else{
-                                Marker m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()));
+                                Marker m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.lost)));
 
                                 m.setTag(info);
                             }
@@ -911,6 +1125,26 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             }
         }
 
+        public void setListViewHeightBasedOnChildren(ListView listView) {
+            ListAdapter listAdapter = listView.getAdapter();
+            if (listAdapter == null) {
+                // pre-condition
+                return;
+            }
+
+            int totalHeight = 0;
+            for (int i = 0; i < listAdapter.getCount(); i++) {
+                View listItem = listAdapter.getView(i, null, listView);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight() * 5;
+            }
+
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+            listView.setLayoutParams(params);
+            listView.requestLayout();
+        }
+
 
         public Double distance(double lat1, LatLng myLatLng, double lon1, double lat2, double lon2, char unit){
             double theta  = lon1 - lon2;
@@ -939,5 +1173,102 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
 
 
+    }
+
+    private class SetReportTask extends AsyncTask<Void,Void,Message>{
+
+
+        private Context mContext = null;
+        private ProgressDialog pDlg = null;
+        private String id = "";
+
+        public SetReportTask(Context mContext, String id){
+            this.mContext = mContext;
+            this.id  = id;
+        }
+
+        @Override
+        protected Message doInBackground(Void... params) {
+            try{
+                AccountManager accountManager = AccountManager.get(mContext);
+                Account[] accounts = accountManager.getAccountsByType("IRetrieve");
+
+                final String url = SERVICE_URL + "/mobile/isettle?isettle=" + id + "&userid=" + accounts[0].name ;
+
+                RestTemplate restTemplate = new RestTemplate();
+                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+
+
+                List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
+                supportedMediaTypes.add(new MediaType("text", "plain"));
+                supportedMediaTypes.add(new MediaType("application", "json"));
+                converter.setSupportedMediaTypes(supportedMediaTypes);
+
+                restTemplate.getMessageConverters().add(converter);
+                Message message = restTemplate.getForObject(url,Message.class);
+
+
+
+                return message;
+            }catch(Exception ex){
+                showMessage(ex.toString());
+                return null;
+            }
+
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            try {
+                // hideKeyboard();
+                showProgressDialog();
+            } catch (Exception ex) {
+                showMessage(ex.toString());
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Message message) {
+            try{
+                pDlg.dismiss();
+                if(message.getId() == 3){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Settle Failed");
+                    builder.setMessage(message.getContent());
+                    builder.setPositiveButton("OK", null);
+                    builder.show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Settle Successful");
+                    builder.setMessage(message.getContent());
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //NavUtils.navigateUpFromSameTask((Activity) mContext);
+                            //Intent intent = new Intent();
+                            //intent.putExtra("intRadius", dummy);
+                            //setResult(5, intent);
+                           // finish();
+                            category = "home";
+                            new PopulateChartTask(context).execute();
+                        }
+                    });
+                    builder.show();
+
+                }
+            }catch(Exception ex){
+                showMessage(ex.toString());
+            }
+        }
+
+        private void showProgressDialog() {
+            pDlg = new ProgressDialog(mContext);
+            pDlg.setMessage("Sending");
+            pDlg.setProgressDrawable(mContext.getWallpaper());
+            pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDlg.setCancelable(false);
+            pDlg.show();
+
+        }
     }
 }

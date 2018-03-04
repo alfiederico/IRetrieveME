@@ -59,7 +59,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
         GoogleMap.OnMapLongClickListener {
     private Form mForm;
     Spinner mType;
-    EditText mSubject;
+    Spinner mSubject;
     EditText mDescription;
     EditText mDate;
     EditText mPlace;
@@ -293,7 +293,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
     public void init(){
         mType = (Spinner)findViewById(R.id.editType);
-        mSubject = (EditText)findViewById(R.id.editSubject);
+        mSubject = (Spinner)findViewById(R.id.editSubject);
         mDescription = (EditText)findViewById(R.id.editDescription);
         mDate = (EditText)findViewById(R.id.editDate);
         mPlace = (EditText)findViewById(R.id.editPlace);
@@ -309,12 +309,27 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
         mType.setAdapter(dataAdapter);
 
 
+        ArrayList<String> subjects = new ArrayList<String>();
+
+        subjects.add("Device");
+        subjects.add("ID");
+        subjects.add("Keys");
+        subjects.add("Money");
+        subjects.add("Pet");
+        subjects.add("Wallet");
+        subjects.add("Others");
+
+        ArrayAdapter<String> subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, subjects);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSubject.setAdapter(subjectAdapter);
+
+
     }
 
     public void validation(){
         mForm = new Form(this);
        // mForm.addField(Field.using(mType).validate(Validation_NotEmpty.build(this)));
-        mForm.addField(Field.using(mSubject).validate(Validation_NotEmpty.build(this)));
+        //mForm.addField(Field.using(mSubject).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mDescription).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mDate).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mPlace).validate(Validation_NotEmpty.build(this)));
@@ -411,7 +426,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
             try{
                 Report newReport = new Report();
                 newReport.setType(mType.getSelectedItem().toString());
-                newReport.setSubject(mSubject.getText().toString());
+                newReport.setSubject(mSubject.getSelectedItem().toString());
                 newReport.setDescription(mDescription.getText().toString());
                 newReport.setDate(mDate.getText().toString());
                 newReport.setPlace(mPlace.getText().toString());

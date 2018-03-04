@@ -36,8 +36,23 @@
             android:textColor="#424242"
             />
 
+        <Spinner
+            android:id="@+id/editSubject"
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
 
-        <EditText
+            android:prompt="@string/spinner_title"
+            android:paddingLeft="8dp"
+
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+
+
+            android:textColor="#424242"
+            />
+
+
+        <!--EditText
             android:layout_width="fill_parent"
             android:layout_height="56dp"
             android:id="@+id/editSubject"
@@ -49,7 +64,7 @@
             android:hint="Subject"
             android:textColorHint="#9e9e9e"
             android:textColor="#424242"
-            android:maxLength="32"/>
+            android:maxLength="32"/-->
 
         <EditText
             android:layout_width="fill_parent"
