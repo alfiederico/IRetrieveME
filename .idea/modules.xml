@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IRetrieveME.iml" filepath="$PROJECT_DIR$/IRetrieveME.iml" />
-      <module fileurl="file://C:\Users\le_it\Desktop\today\Mobile\IRetrieveME\IRetrieveME.iml" filepath="C:\Users\le_it\Desktop\today\Mobile\IRetrieveME\IRetrieveME.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\le_it\Desktop\today\Mobile\IRetrieveME\app\app.iml" filepath="C:\Users\le_it\Desktop\today\Mobile\IRetrieveME\app\app.iml" />
     </modules>
   </component>
 </project>

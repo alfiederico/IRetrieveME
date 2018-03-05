@@ -23,17 +23,25 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Utils;
@@ -50,6 +58,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import cloud.iretrieve.com.iretrieve.custom.DayAxisValueFormatter;
+import cloud.iretrieve.com.iretrieve.custom.MyAxisValueFormatter;
+import cloud.iretrieve.com.iretrieve.custom.XYMarkerView;
 import cloud.iretrieve.com.iretrieve.domain.History;
 import cloud.iretrieve.com.iretrieve.model.LineSet;
 
@@ -59,6 +70,7 @@ public class Activity_Statistic extends Activity {
     Context context = null;
     PieChart mPieChart;
     LineChart mChart1;
+    BarChart mBarChart;
     ArrayList<Integer> colors;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +165,73 @@ public class Activity_Statistic extends Activity {
             mChart1.getAxisRight().setEnabled(false);
 
 
+            mBarChart = (BarChart) findViewById(R.id.chartbar);
+
+           // mBarChart.setOnChartValueSelectedListener(context);
+
+            mBarChart.setDrawBarShadow(false);
+            mBarChart.setDrawValueAboveBar(true);
+
+            mBarChart.getDescription().setEnabled(false);
+
+            // if more than 60 entries are displayed in the chart, no values will be
+            // drawn
+            mBarChart.setMaxVisibleValueCount(60);
+
+            // scaling can now only be done on x- and y-axis separately
+            mBarChart.setPinchZoom(false);
+
+            mBarChart.setDrawGridBackground(false);
+            // mChart.setDrawYLabels(false);
+
+            IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mBarChart);
+
+            XAxis xAxis = mBarChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            //xAxis.setTypeface(mTfLight);
+            xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1f); // only intervals of 1 day
+            xAxis.setLabelCount(6);
+            xAxis.setValueFormatter(xAxisFormatter);
+
+            IAxisValueFormatter custom = new MyAxisValueFormatter();
+
+            YAxis leftAxis = mBarChart.getAxisLeft();
+           // leftAxis.setTypeface(mTfLight);
+            leftAxis.setLabelCount(6, false);
+            leftAxis.setValueFormatter(custom);
+            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setSpaceTop(15f);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis rightAxis = mBarChart.getAxisRight();
+            rightAxis.setDrawGridLines(false);
+            //rightAxis.setTypeface(mTfLight);
+            rightAxis.setLabelCount(6, false);
+            rightAxis.setValueFormatter(custom);
+            rightAxis.setSpaceTop(15f);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            /**Legend l = mBarChart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setForm(Legend.LegendForm.SQUARE);
+            l.setFormSize(9f);
+            l.setTextSize(11f);
+            l.setXEntrySpace(4f);**/
+            // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+            // "def", "ghj", "ikl", "mno" });
+            // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+            // "def", "ghj", "ikl", "mno" });
+
+            XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
+            mv.setChartView(mBarChart); // For bounds control
+            mBarChart.setMarker(mv); // Set the marker to the chart
+
+
+
             new GetHistoryTask(context).execute();
 
 
@@ -164,6 +243,63 @@ public class Activity_Statistic extends Activity {
         }catch(Exception ex){
             showMessage(ex.getMessage());
         }
+    }
+
+    private void setData(int count, int range, History[] histories ) {
+
+        float start = 0f;
+
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+
+        String[] mcategory = new String[]{
+                "Device", "ID", "Key", "Money", "Pet", "Wallet", "Others"
+        };
+
+
+        for (int i = (int) start; i < start + count ; i++) {
+            int mult = (range);
+            int val = 0;
+
+            for(History e: histories){
+                if(e.getType().toUpperCase().equals("LOST")){
+                    System.out.println(e.getSubject().toUpperCase() + " == " + mcategory[i].toUpperCase() );
+                    if(e.getSubject().toUpperCase().equals(mcategory[i].toUpperCase())){
+                        val += 1;
+                    }
+                }
+
+            }
+
+            yVals1.add(new BarEntry(i, val));
+        }
+
+        BarDataSet set1;
+
+        if (mBarChart.getData() != null &&
+                mBarChart.getData().getDataSetCount() > 0) {
+            set1 = (BarDataSet) mBarChart.getData().getDataSetByIndex(0);
+            set1.setValues(yVals1);
+            mBarChart.getData().notifyDataChanged();
+            mBarChart.notifyDataSetChanged();
+        } else {
+            set1 = new BarDataSet(yVals1, "Lost & found per category");
+
+            set1.setDrawIcons(false);
+
+            set1.setColors(ColorTemplate.MATERIAL_COLORS);
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set1);
+
+            BarData data = new BarData(dataSets);
+            data.setValueTextSize(10f);
+            //data.setValueTypeface(mTfLight);
+            data.setBarWidth(0.9f);
+
+            mBarChart.setData(data);
+        }
+
+        mBarChart.invalidate();
     }
 
 
@@ -392,6 +528,9 @@ public class Activity_Statistic extends Activity {
                     l.setYOffset(0f);
 
                     mPieChart.invalidate();
+
+
+                    setData(7, isettle, histories);
 
 
 

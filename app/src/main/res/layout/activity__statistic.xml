@@ -58,6 +58,11 @@ tools:context="cloud.iretrieve.com.iretrieve.Activity_Statistic">
 
                 </LinearLayout>
 
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chartbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
 
             </LinearLayout>
 
