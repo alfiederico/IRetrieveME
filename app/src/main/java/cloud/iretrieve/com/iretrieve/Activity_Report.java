@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -49,8 +50,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import android.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
@@ -67,6 +71,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
     EditText mDescription;
     EditText mDate;
     EditText mPlace;
+    ImageView mPhoto;
 
     EditText mContact;
     Button btnReport;
@@ -78,7 +83,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.12:8089"; //"http://alfiederico.com/iRetrieve-0.0.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,8 +201,8 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 // Log.d(TAG, String.valueOf(bitmap));
 
-                ImageView imageView = (ImageView) findViewById(R.id.imageView);
-                imageView.setImageBitmap(bitmap);
+                //ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                mPhoto.setImageBitmap(bitmap);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -333,6 +338,8 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
         mPlace = (EditText)findViewById(R.id.editPlace);
         mContact = (EditText)findViewById(R.id.editContact);
         btnReport = (Button)findViewById(R.id.btnReport);
+        mPhoto = (ImageView) findViewById(R.id.imageView);
+
 
         ArrayList<String> types = new ArrayList<String>();
 
@@ -470,6 +477,24 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
                 newReport.setUserId(Integer.parseInt(userId));
 
 
+                Bitmap bitmap = ((BitmapDrawable) mPhoto.getDrawable()).getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+                byte[] imageInByte = baos.toByteArray();
+
+                try {
+                    // Reading a Image file from file system
+                    String base64Image = "";
+                    base64Image = Base64.encodeToString(imageInByte,Base64.DEFAULT);
+                    newReport.setPhoto(base64Image);
+
+
+                    System.out.println(base64Image);
+                } catch (Exception ioe) {
+                    System.out.println("Exception while reading the Image " + ioe);
+                }
+
+                //http://javasampleapproach.com/java-integration/transfer-image-restfulapi-image-restfulapi
 
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 
@@ -484,7 +509,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
                 return rest.postForObject(url,newReport,Report.class);
 
             }catch(Exception ex){
-                showMessage(ex.toString());
+                System.out.println(ex.getMessage());
                 return null;
             }
 

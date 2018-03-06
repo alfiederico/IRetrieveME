@@ -55,6 +55,9 @@ public class Report {
     @JsonProperty("contact")
     private String contact;
 
+    @JsonProperty("photo")
+    private String photo;
+
     public String getContact() {
         return contact;
     }
@@ -194,5 +197,13 @@ public class Report {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }
