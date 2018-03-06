@@ -165,6 +165,34 @@
             android:maxLength="32"/>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/photo_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:onClick="onPhotoSearch"
+                android:layout_gravity="center_horizontal"
+                android:text="Upload Photo" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:id="@+id/imageView" />
+
+
+
+
+
 
         <Button
             android:layout_width="fill_parent"
