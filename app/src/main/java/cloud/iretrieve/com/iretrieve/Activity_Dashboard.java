@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -26,6 +27,7 @@ import android.support.v4.app.NavUtils;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.Base64;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,6 +41,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -141,7 +144,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.12:8089";
 
     private static int iRadius = 50;
 
@@ -802,6 +805,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             TextView txtDate = (TextView) convertView.findViewById(R.id.txtDate);
             TextView txtPlace = (TextView) convertView.findViewById(R.id.txtPlace);
             TextView txtContact = (TextView) convertView.findViewById(R.id.txtContact);
+            ImageView mPhoto = (ImageView) convertView.findViewById(R.id.imageView);
 
 
 
@@ -809,10 +813,18 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
             txtType.setText("Type : " + new String(childText.getType()).toString());
             txtSubject.setText("Subject : " + new String(childText.getSubject()).toString());
-            txtDescription.setText("Description : " + new String(childText.getDescription()).toString());
+            //txtDescription.setText("Description : " + new String(childText.getDescription()).toString());
+            txtDescription.setText("Description : " + "The big brown fox jump over the lazy dog and the beat rocks");
             txtDate.setText("Date : " + new String(childText.getDate()).toString());
             txtPlace.setText("Place : " + new String(childText.getPlace()).toString());
             txtContact.setText("Contact : " + new String(childText.getContact()).toString());
+
+            try{
+               final byte[] decodedBytes =  Base64.decode(childText.getPhoto(),Base64.DEFAULT);
+               mPhoto.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+            }catch(Exception ex){
+                //use default picture here
+            }
 
 
             return convertView;
@@ -1136,7 +1148,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             for (int i = 0; i < listAdapter.getCount(); i++) {
                 View listItem = listAdapter.getView(i, null, listView);
                 listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight() * 5;
+                totalHeight += listItem.getMeasuredHeight() * 7;
+                totalHeight += 100;
             }
 
             ViewGroup.LayoutParams params = listView.getLayoutParams();

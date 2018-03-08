@@ -42,7 +42,7 @@ public class Activity_History extends Activity {
     HashMap<String, List<History>> listDataChild;
     Context context = null;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.12:8089";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

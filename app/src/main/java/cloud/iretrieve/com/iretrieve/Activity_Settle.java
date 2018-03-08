@@ -8,15 +8,18 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -33,16 +36,18 @@ import cloud.iretrieve.com.iretrieve.domain.Staff;
 public class Activity_Settle extends Activity {
     private Form mForm;
     EditText mID;
- EditText mType;
+    EditText mType;
     EditText mSubject;
     EditText mDescription;
     EditText mDate;
     EditText mPlace;
-    EditText mLocation;
+    ImageView mPhoto;
+
+
     EditText mReferenceID;
     Button btnReport;
     Context context = null;
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.12:8089";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -72,12 +77,12 @@ public class Activity_Settle extends Activity {
         mDescription = (EditText)findViewById(R.id.editDescription);
         mDate = (EditText)findViewById(R.id.editDate);
         mPlace = (EditText)findViewById(R.id.editPlace);
-        mLocation = (EditText)findViewById(R.id.editLocation);
         mReferenceID = (EditText)findViewById(R.id.editReferenceID);
         btnReport = (Button)findViewById(R.id.btnReport);
+        mPhoto = (ImageView)findViewById(R.id.imageView);
 
         mID.setEnabled(false);
-
+        mType.setEnabled(false);
 
     }
 
@@ -89,7 +94,6 @@ public class Activity_Settle extends Activity {
         mForm.addField(Field.using(mDescription).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mDate).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mPlace).validate(Validation_NotEmpty.build(this)));
-        mForm.addField(Field.using(mLocation).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mReferenceID).validate(Validation_NotEmpty.build(this)));
     }
     public void createListener(){
@@ -235,7 +239,16 @@ public class Activity_Settle extends Activity {
                     mDescription.setText(report.getDescription());
                     mDate.setText(report.getDate());
                     mPlace.setText(report.getPlace());
-                    mLocation.setText(report.getLocation());
+
+                    try{
+                        final byte[] decodedBytes =  Base64.decode(report.getPhoto(),Base64.DEFAULT);
+                        mPhoto.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+                    }catch(Exception ex){
+                        //use default picture here
+                    }
+
+
+
                     mReferenceID.setText(new Integer(report.getIsettle()).toString());
 
                 }

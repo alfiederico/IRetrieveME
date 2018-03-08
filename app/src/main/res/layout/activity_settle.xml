@@ -117,22 +117,11 @@
             android:maxLength="48"
             />
 
-        <EditText
+        <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editLocation"
-            android:layout_below="@+id/editText"
-            android:paddingLeft="8dp"
-            android:drawablePadding="10dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:drawableLeft="@drawable/store"
-            android:hint="Location"
-            android:textColorHint="#9e9e9e"
-            android:textColor="#424242"
-            android:singleLine="true"
-            android:maxLength="48"
-            />
+            android:layout_height="200dp"
+            android:id="@+id/imageView" />
+
 
         <EditText
             android:layout_width="fill_parent"

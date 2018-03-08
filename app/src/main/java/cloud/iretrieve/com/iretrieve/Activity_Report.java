@@ -491,7 +491,8 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
                     System.out.println(base64Image);
                 } catch (Exception ioe) {
-                    System.out.println("Exception while reading the Image " + ioe);
+                    //add default photo here
+                    newReport.setPhoto("");
                 }
 
                 //http://javasampleapproach.com/java-integration/transfer-image-restfulapi-image-restfulapi
