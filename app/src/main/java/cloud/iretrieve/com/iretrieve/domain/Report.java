@@ -58,6 +58,8 @@ public class Report {
     @JsonProperty("photo")
     private String photo;
 
+    private boolean settled;
+
     public String getContact() {
         return contact;
     }
@@ -205,5 +207,13 @@ public class Report {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public boolean isSettled() {
+        return settled;
+    }
+
+    public void setSettled(boolean settled) {
+        this.settled = settled;
     }
 }

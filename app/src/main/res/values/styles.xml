@@ -13,17 +13,21 @@
         <item name="android:actionBarStyle">@style/AppTheme_ActionBar</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">20sp</item>
+
     </style>
 
     <style name="AppTheme_ActionBar" parent="android:Widget.Holo.ActionBar.Solid">
         <item name="android:icon">@drawable/actionbar_icon_placeholder_compat</item>
         <item name="android:titleTextStyle">@style/AppTheme_ActionBar_Title</item>
         <item name="android:background">#42A5F5</item>
+
     </style>
 
     <style name="AppTheme_ActionBar_Title" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">20sp</item>
     </style>
+
+
 
 </resources>

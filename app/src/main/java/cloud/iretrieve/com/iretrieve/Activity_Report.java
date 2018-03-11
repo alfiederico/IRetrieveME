@@ -361,7 +361,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
         subjects.add("Others");
 
         ArrayAdapter<String> subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, subjects);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSubject.setAdapter(subjectAdapter);
 
 
@@ -477,19 +477,15 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
                 newReport.setUserId(Integer.parseInt(userId));
 
 
-                Bitmap bitmap = ((BitmapDrawable) mPhoto.getDrawable()).getBitmap();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
-                byte[] imageInByte = baos.toByteArray();
-
                 try {
+                    Bitmap bitmap = ((BitmapDrawable) mPhoto.getDrawable()).getBitmap();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+                    byte[] imageInByte = baos.toByteArray();
                     // Reading a Image file from file system
                     String base64Image = "";
                     base64Image = Base64.encodeToString(imageInByte,Base64.DEFAULT);
                     newReport.setPhoto(base64Image);
-
-
-                    System.out.println(base64Image);
                 } catch (Exception ioe) {
                     //add default photo here
                     newReport.setPhoto("");

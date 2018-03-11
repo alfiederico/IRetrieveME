@@ -17,9 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -37,7 +39,7 @@ public class Activity_Settle extends Activity {
     private Form mForm;
     EditText mID;
     EditText mType;
-    EditText mSubject;
+    Spinner mSubject;
     EditText mDescription;
     EditText mDate;
     EditText mPlace;
@@ -73,7 +75,7 @@ public class Activity_Settle extends Activity {
     public void init(){
         mID = (EditText)findViewById(R.id.editID);
         mType = (EditText)findViewById(R.id.editType);
-        mSubject = (EditText)findViewById(R.id.editSubject);
+        mSubject = (Spinner)findViewById(R.id.editSubject);
         mDescription = (EditText)findViewById(R.id.editDescription);
         mDate = (EditText)findViewById(R.id.editDate);
         mPlace = (EditText)findViewById(R.id.editPlace);
@@ -84,13 +86,26 @@ public class Activity_Settle extends Activity {
         mID.setEnabled(false);
         mType.setEnabled(false);
 
+        ArrayList<String> subjects = new ArrayList<String>();
+
+        subjects.add("Device");
+        subjects.add("ID");
+        subjects.add("Key");
+        subjects.add("Money");
+        subjects.add("Pet");
+        subjects.add("Wallet");
+        subjects.add("Others");
+
+        ArrayAdapter<String> subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, subjects);
+        subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSubject.setAdapter(subjectAdapter);
+
     }
 
     public void validation(){
         mForm = new Form(this);
         mForm.addField(Field.using(mID).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mType).validate(Validation_NotEmpty.build(this)));
-        mForm.addField(Field.using(mSubject).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mDescription).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mDate).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mPlace).validate(Validation_NotEmpty.build(this)));
@@ -223,6 +238,7 @@ public class Activity_Settle extends Activity {
                 if(report == null){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Settle Failed");
+                    builder.setCancelable(false);
                     builder.setMessage("Report item not found. Report item first.. Please try again.");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -235,16 +251,28 @@ public class Activity_Settle extends Activity {
 
                     mID.setText(new Integer(report.getId()).toString());
                     mType.setText(report.getType());
-                    mSubject.setText(report.getSubject());
+
+                    for(int i=0; i < mSubject.getAdapter().getCount(); i++) {
+                        if(report.getSubject().equals(mSubject.getAdapter().getItem(i).toString())){
+                            mSubject.setSelection(i);
+                            break;
+                        }
+                    }
+
                     mDescription.setText(report.getDescription());
                     mDate.setText(report.getDate());
                     mPlace.setText(report.getPlace());
 
                     try{
-                        final byte[] decodedBytes =  Base64.decode(report.getPhoto(),Base64.DEFAULT);
-                        mPhoto.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+                        if(report.getPhoto()!= null && !report.getPhoto().equals("") ){
+                            final byte[] decodedBytes =  Base64.decode(report.getPhoto(),Base64.DEFAULT);
+                            mPhoto.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+                        }else{
+                            mPhoto.setImageDrawable(getDrawable(R.drawable.no_image));
+                        }
+
                     }catch(Exception ex){
-                        //use default picture here
+                        mPhoto.setImageDrawable(getDrawable(R.drawable.no_image));
                     }
 
 
@@ -326,11 +354,20 @@ public class Activity_Settle extends Activity {
         protected void onPostExecute(Message message) {
             try{
                 pDlg.dismiss();
-                if(message.getId() == 3){
+                if(message.getId() >= 3){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Settle Failed");
                     builder.setMessage(message.getContent());
-                    builder.setPositiveButton("OK", null);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //NavUtils.navigateUpFromSameTask((Activity) mContext);
+                            Intent intent = new Intent();
+                            //intent.putExtra("intRadius", dummy);
+                            setResult(5, intent);
+                            finish();
+                        }
+                    });
+
                     builder.show();
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

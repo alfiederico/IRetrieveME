@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
@@ -197,10 +198,17 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             long id) {
 
                         final TextView txtID = (TextView) v.findViewById(R.id.txtID);
+                        final TextView txtSettle = (TextView) v.findViewById(R.id.txtSettled);
+
+                        if(txtSettle.getText().toString().contains("YES")){
+                            showMessage("This item is already settled by your account");
+                            return false;
+                        }
+
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                        builder.setMessage("Settle: " + txtID.getText().toString());
+                        builder.setMessage("Settle " + txtID.getText().toString());
 
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
                         {
@@ -806,6 +814,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             TextView txtPlace = (TextView) convertView.findViewById(R.id.txtPlace);
             TextView txtContact = (TextView) convertView.findViewById(R.id.txtContact);
             ImageView mPhoto = (ImageView) convertView.findViewById(R.id.imageView);
+            TextView txtSettled = (TextView) convertView.findViewById(R.id.txtSettled);
 
 
 
@@ -813,17 +822,27 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
             txtType.setText("Type : " + new String(childText.getType()).toString());
             txtSubject.setText("Subject : " + new String(childText.getSubject()).toString());
-            //txtDescription.setText("Description : " + new String(childText.getDescription()).toString());
-            txtDescription.setText("Description : " + "The big brown fox jump over the lazy dog and the beat rocks");
+            txtDescription.setText("Description : " + new String(childText.getDescription()).toString());
             txtDate.setText("Date : " + new String(childText.getDate()).toString());
             txtPlace.setText("Place : " + new String(childText.getPlace()).toString());
             txtContact.setText("Contact : " + new String(childText.getContact()).toString());
 
+            if(childText.isSettled()){
+                txtSettled.setText("Settled: YES");
+            }else{
+                txtSettled.setText("Settled: NO");
+            }
+
+
             try{
-               final byte[] decodedBytes =  Base64.decode(childText.getPhoto(),Base64.DEFAULT);
-               mPhoto.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+                if(childText.getPhoto()!= null && !childText.getPhoto().equals("") ){
+                    final byte[] decodedBytes =  Base64.decode(childText.getPhoto(),Base64.DEFAULT);
+                    mPhoto.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+                }else{
+                    mPhoto.setImageDrawable(getDrawable(R.drawable.no_image));
+                }
             }catch(Exception ex){
-                //use default picture here
+                mPhoto.setImageDrawable(getDrawable(R.drawable.no_image));
             }
 
 
@@ -1003,11 +1022,26 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     listReportDataChild = new HashMap<String, List<Report>>();
                     int itemCount = 0;
                     int headerCount = 0;
+                    int myreportids = 0;
+                    for(Report e: reports){
+                        if(e.getUserId() == Integer.parseInt(accounts[0].name)){
+                            myreportids = e.getId();
+                            break;
+                        }
+                    }
+
                     for(Report e: reports){
                         if(e.getUserId() == Integer.parseInt(accounts[0].name)){
                             continue;
                         }
+                        if(e.getUsettle() == myreportids){
+                            e.setSettled(true);
+                        }else{
+                            e.setSettled(false);
+                        }
+
                         listReportDataHeader.add(e.getSubject().toUpperCase() + "(" + e.getDate() + ")");
+
                         ArrayList<Report> arrReports = new ArrayList<Report>();
                         arrReports.add(e);
                         listReportDataChild.put(listReportDataHeader.get(headerCount), arrReports);
@@ -1148,7 +1182,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             for (int i = 0; i < listAdapter.getCount(); i++) {
                 View listItem = listAdapter.getView(i, null, listView);
                 listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight() * 7;
+                totalHeight += listItem.getMeasuredHeight() * 8;
                 totalHeight += 100;
             }
 

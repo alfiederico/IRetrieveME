@@ -42,6 +42,9 @@ public class History {
     @JsonProperty("place")
     private String place;
 
+    @JsonProperty("photo")
+    private String photo;
+
     private Point point;
 
 
@@ -156,5 +159,12 @@ public class History {
         this.settleId = settleId;
     }
 
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }
 

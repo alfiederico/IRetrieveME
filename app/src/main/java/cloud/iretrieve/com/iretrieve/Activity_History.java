@@ -7,9 +7,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.springframework.http.MediaType;
@@ -175,6 +178,7 @@ public class Activity_History extends Activity {
             TextView txtDescription = (TextView) convertView.findViewById(R.id.txtDescription);
             TextView txtDate = (TextView) convertView.findViewById(R.id.txtDate);
             TextView txtPlace = (TextView) convertView.findViewById(R.id.txtPlace);
+            ImageView mPhoto = (ImageView) convertView.findViewById(R.id.imageView);
             //TextView txtLocation = (TextView) convertView.findViewById(R.id.txtLocation);
             //TextView txtSettleID = (TextView) convertView.findViewById(R.id.txtSettleID);
 
@@ -188,6 +192,17 @@ public class Activity_History extends Activity {
             txtPlace.setText("Place : " + new String(childText.getPlace()).toString());
            // txtLocation.setText("Geocode : " +  new String(childText.getLocation()).toString());
             //txtSettleID.setText("Settle ID" + new Integer(childText.getSettleId()).toString());
+
+            try{
+                if(childText.getPhoto()!= null && !childText.getPhoto().equals("") ){
+                    final byte[] decodedBytes =  Base64.decode(childText.getPhoto(),Base64.DEFAULT);
+                    mPhoto.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+                }else{
+                    mPhoto.setImageDrawable(getDrawable(R.drawable.no_image));
+                }
+            }catch(Exception ex){
+                mPhoto.setImageDrawable(getDrawable(R.drawable.no_image));
+            }
 
             return convertView;
         }
