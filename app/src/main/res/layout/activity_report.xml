@@ -75,10 +75,9 @@
             android:drawablePadding="10dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:drawableLeft="@drawable/email"
             android:hint="Description"
             android:textColorHint="#9e9e9e"
-
+            android:drawableLeft="@drawable/desc"
             android:textColor="#424242"
             android:maxLength="32"/>
 
@@ -126,6 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
+
                 android:hint="Search Location Here" />
 
 
@@ -157,7 +157,7 @@
             android:drawablePadding="10dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:drawableLeft="@drawable/email"
+            android:drawableLeft="@drawable/phone"
             android:hint="Contact Details"
             android:textColorHint="#9e9e9e"
 

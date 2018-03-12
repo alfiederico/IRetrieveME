@@ -83,7 +83,7 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://192.168.254.12:8089"; //"http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1"; //"http://alfiederico.com/iRetrieve-0.0.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -352,13 +352,13 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
         ArrayList<String> subjects = new ArrayList<String>();
 
-        subjects.add("Device");
+        subjects.add("DEVICE");
         subjects.add("ID");
-        subjects.add("Key");
-        subjects.add("Money");
-        subjects.add("Pet");
-        subjects.add("Wallet");
-        subjects.add("Others");
+        subjects.add("KEY");
+        subjects.add("MONEY");
+        subjects.add("PET");
+        subjects.add("WALLET");
+        subjects.add("OTHERS");
 
         ArrayAdapter<String> subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, subjects);
         subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

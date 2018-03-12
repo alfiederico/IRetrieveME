@@ -41,7 +41,7 @@ import static junit.framework.Assert.assertTrue;
 
 
 public class MainActivity extends Activity {
-    private static final String SERVICE_URL = "http://192.168.254.12:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
     TextView txtRegister;
     TextView txtForgot;
     Button btnLogin;
@@ -288,7 +288,7 @@ public class MainActivity extends Activity {
 
                 return message;
             } catch (Exception ex) {
-                showMessage(ex.toString());
+               // showMessage(ex.toString());
                 return null;
             }
         }
@@ -366,6 +366,13 @@ public class MainActivity extends Activity {
                     builder.setPositiveButton("OK", null);
                     builder.show();
                 }
+                else if(message == null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Login Failed");
+                    builder.setMessage("Cannot connect to server. Please check internet connection and try again.");
+                    builder.setPositiveButton("OK", null);
+                    builder.show();
+                }
                 else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Login Failed");
@@ -375,7 +382,7 @@ public class MainActivity extends Activity {
                 }
 
             } catch (Exception ex) {
-                showMessage(ex.toString());
+               // showMessage(ex.toString());
             }
 
 

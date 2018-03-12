@@ -39,7 +39,7 @@ public class Activity_Settle extends Activity {
     private Form mForm;
     EditText mID;
     EditText mType;
-    Spinner mSubject;
+    EditText mSubject;
     EditText mDescription;
     EditText mDate;
     EditText mPlace;
@@ -49,7 +49,7 @@ public class Activity_Settle extends Activity {
     EditText mReferenceID;
     Button btnReport;
     Context context = null;
-    private static final String SERVICE_URL = "http://192.168.254.12:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -75,7 +75,7 @@ public class Activity_Settle extends Activity {
     public void init(){
         mID = (EditText)findViewById(R.id.editID);
         mType = (EditText)findViewById(R.id.editType);
-        mSubject = (Spinner)findViewById(R.id.editSubject);
+        mSubject = (EditText)findViewById(R.id.editSubject);
         mDescription = (EditText)findViewById(R.id.editDescription);
         mDate = (EditText)findViewById(R.id.editDate);
         mPlace = (EditText)findViewById(R.id.editPlace);
@@ -85,20 +85,11 @@ public class Activity_Settle extends Activity {
 
         mID.setEnabled(false);
         mType.setEnabled(false);
+        mSubject.setEnabled(false);
+        mDescription.setEnabled(false);
+        mDate.setEnabled(false);
+        mPlace.setEnabled(false);
 
-        ArrayList<String> subjects = new ArrayList<String>();
-
-        subjects.add("Device");
-        subjects.add("ID");
-        subjects.add("Key");
-        subjects.add("Money");
-        subjects.add("Pet");
-        subjects.add("Wallet");
-        subjects.add("Others");
-
-        ArrayAdapter<String> subjectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, subjects);
-        subjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSubject.setAdapter(subjectAdapter);
 
     }
 
@@ -106,6 +97,7 @@ public class Activity_Settle extends Activity {
         mForm = new Form(this);
         mForm.addField(Field.using(mID).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mType).validate(Validation_NotEmpty.build(this)));
+        mForm.addField(Field.using(mSubject).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mDescription).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mDate).validate(Validation_NotEmpty.build(this)));
         mForm.addField(Field.using(mPlace).validate(Validation_NotEmpty.build(this)));
@@ -251,13 +243,7 @@ public class Activity_Settle extends Activity {
 
                     mID.setText(new Integer(report.getId()).toString());
                     mType.setText(report.getType());
-
-                    for(int i=0; i < mSubject.getAdapter().getCount(); i++) {
-                        if(report.getSubject().equals(mSubject.getAdapter().getItem(i).toString())){
-                            mSubject.setSelection(i);
-                            break;
-                        }
-                    }
+                    mSubject.setText(report.getSubject());
 
                     mDescription.setText(report.getDescription());
                     mDate.setText(report.getDate());
@@ -277,7 +263,8 @@ public class Activity_Settle extends Activity {
 
 
 
-                    mReferenceID.setText(new Integer(report.getIsettle()).toString());
+                    //mReferenceID.setText(new Integer(report.getIsettle()).toString());
+                    mReferenceID.setText("");
 
                 }
             }catch(Exception ex){

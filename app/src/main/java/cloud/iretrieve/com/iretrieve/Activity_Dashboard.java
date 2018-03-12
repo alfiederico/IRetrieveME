@@ -145,7 +145,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://192.168.254.12:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
 
     private static int iRadius = 50;
 
@@ -246,7 +246,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
         listAdapter = new List_ExpandableAdapter(this, listDataHeader, listDataChild);
 
-        listReportAdapter = new ReportList_ExpandableAdapter(this, listReportDataHeader, listReportDataChild);
+        //listReportAdapter = new ReportList_ExpandableAdapter(this, listReportDataHeader, listReportDataChild);
 
         expListView.setOnGroupExpandListener(this);
 
@@ -1011,7 +1011,14 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                 if(category == "home"){
 
                     if(reports == null){
+                        mMap.clear();
                         ActionItemBadge.hide(badgeMenu.findItem(SAMPLE2_ID));
+                        if(listReportAdapter != null){
+                            listReportDataHeader.clear();
+                            listReportDataChild.clear();
+                            listReportAdapter.notifyDataSetChanged();
+                            setListViewHeightBasedOnChildren(expReports);
+                        }
                         return;
                     }
 
