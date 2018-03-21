@@ -66,7 +66,7 @@ import cloud.iretrieve.com.iretrieve.model.LineSet;
 
 public class Activity_Statistic extends Activity {
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
     Context context = null;
     PieChart mPieChart;
     LineChart mChart1;

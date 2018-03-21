@@ -47,6 +47,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -87,7 +88,7 @@ import static com.mikepenz.fontawesome_typeface_library.FontAwesome.Icon.faw_and
 
 public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnMarkerDragListener,
-        GoogleMap.OnMapLongClickListener, ExpandableListView.OnGroupExpandListener, Button.OnClickListener {
+        GoogleMap.OnMapLongClickListener, ExpandableListView.OnGroupExpandListener, Button.OnClickListener, GoogleMap.OnMarkerClickListener {
     List_ExpandableAdapter listAdapter;
     ReportList_ExpandableAdapter listReportAdapter;
     ExpandableListView expListView;
@@ -115,6 +116,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     TextView txtSettingSub;
     TextView txtStatisticSub;
     TextView txtLogoutSub;
+    ScrollView mScrollView;
 
     HorizontalScrollView hsView;
 
@@ -145,7 +147,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.3:8089";
 
     private static int iRadius = 50;
 
@@ -153,6 +155,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     List<String> listReportDataHeader;
     HashMap<String, List<Report>> listReportDataChild;
+
 
 
 
@@ -187,6 +190,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
         expReports = (ExpandableListView) findViewById(R.id.lvExpReports);
+
+        mScrollView = (ScrollView) findViewById(R.id.scrollView1);
 
         expReports
                 .setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -279,6 +284,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettingSub = (TextView) findViewById(R.id.txtSettingSub);
         txtStatisticSub = (TextView) findViewById(R.id.txtStatisticsSub);
         txtLogoutSub = (TextView) findViewById(R.id.txtLogoutSub);
+
+
 
 
         hsView = (HorizontalScrollView) findViewById(R.id.hsView);
@@ -536,11 +543,51 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     }
 
     @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        /**if (marker.equals(myMarker))
+        {
+            //handle click here
+        }**/
+
+        Report e = (Report)marker.getTag();
+        System.out.println(e.getLocation());
+        category = "home";
+        new PopulateChartTask(context, e.getLocation()).execute();
+
+
+        return true;
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight() * 8;
+            totalHeight += 100;
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         CustomInfoWindowGoogleMap customInfoWindow = new CustomInfoWindowGoogleMap(this);
         mMap.setInfoWindowAdapter(customInfoWindow);
+
+        mMap.setOnMarkerClickListener(this);
 
 
         // Add a marker in Sydney and move the camera
@@ -908,10 +955,16 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     private class PopulateChartTask extends AsyncTask<Void, Void, Report[]> {
         private Context mContext = null;
         private ProgressDialog pDlg = null;
+        private String location = "";
 
 
         public PopulateChartTask(Context mContext){
             this.mContext = mContext;
+        }
+
+        public PopulateChartTask(Context mContext, String location){
+            this.mContext = mContext;
+            this.location = location;
         }
 
 
@@ -1038,9 +1091,16 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     }
 
                     for(Report e: reports){
-                        if(e.getUserId() == Integer.parseInt(accounts[0].name)){
-                            continue;
+                        if(location != ""){
+                            if(!e.getLocation().equals(location)){
+                                continue;
+                            }
+                        }else{
+                            if(e.getUserId() == Integer.parseInt(accounts[0].name)){
+                                continue;
+                            }
                         }
+
                         if(e.getUsettle() == myreportids){
                             e.setSettled(true);
                         }else{
@@ -1065,6 +1125,11 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     for(int i=0; i < listReportAdapter.getGroupCount(); i++)
                         expReports.expandGroup(i);
 
+                    if(location != ""){
+                        mScrollView.smoothScrollTo(0,500);
+                        return;
+                    }
+
 
                     mMap.clear();
 
@@ -1088,6 +1153,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             info.setDescription("Description : " + e.getDescription());
                             info.setDate("Date : " + e.getDate());
                             info.setContact(e.getContact());
+                            info.setLocation(e.getLocation());
 
                             myLatLng = latlng;
 
@@ -1121,13 +1187,14 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         LatLng latlng = new LatLng(Double.parseDouble(f[0]), Double.parseDouble(f[1]));
                         if(e.getUserId() == Integer.parseInt(accounts[0].name)){
 
-                        }else if(distance(myLatLng.latitude,myLatLng,longitude,latlng.latitude,latlng.longitude,'K') <= iRadius){
+                        }else if(distance(myLatLng.latitude,myLatLng.longitude,latlng.latitude,latlng.longitude,'K') <= iRadius){
 
                             Report info = new Report();
                             info.setSubject("Subject : " + e.getSubject() );
                             info.setDescription("Description : " + e.getDescription());
                             info.setDate("Date : " + e.getDate());
                             info.setContact(e.getContact());
+                            info.setLocation(e.getLocation());
 
                             if(e.getType().equals("FOUND")){
                                 Marker m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory
@@ -1200,7 +1267,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         }
 
 
-        public Double distance(double lat1, LatLng myLatLng, double lon1, double lat2, double lon2, char unit){
+        public Double distance(double lat1, double lon1, double lat2, double lon2, char unit){
             double theta  = lon1 - lon2;
             double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
             dist = Math.acos(dist);
@@ -1211,7 +1278,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             }else{
                 dist = dist * 0.8684;
             }
-
+            System.out.println("Distance " + dist);
             return dist;
         }
 
