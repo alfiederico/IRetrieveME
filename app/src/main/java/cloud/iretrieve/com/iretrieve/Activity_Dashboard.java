@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -57,6 +58,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -147,7 +149,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://192.168.254.3:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
 
     private static int iRadius = 50;
 
@@ -156,7 +158,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     List<String> listReportDataHeader;
     HashMap<String, List<Report>> listReportDataChild;
 
-
+    boolean mLocationPermissionGranted = false;
 
 
     @Override
@@ -497,6 +499,41 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         }
     }
 
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
+    private void getLocationPermission() {
+    /*
+     * Request location permission, so that we can get the location of the
+     * device. The result of the permission request is handled by a callback,
+     * onRequestPermissionsResult.
+     */
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                }
+            }
+        }
+       updateLocationUI();
+    }
+
     //Getting current location
     private void getCurrentLocation() {
         mMap.clear();
@@ -508,8 +545,10 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            mLocationPermissionGranted = false;
             return;
         }
+        mLocationPermissionGranted = true;
         Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         if (location != null) {
             //Getting longitude and latitude
@@ -530,10 +569,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
          * move the camera with animation
          */
         LatLng latLng = new LatLng(latitude, longitude);
-        /**mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .draggable(true)
-                .title("Marker in India"));**/
+
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.here)));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -544,16 +581,29 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
+        try{
+            Report e = (Report)marker.getTag();
+            System.out.println(e.getLocation());
+            category = "home";
 
-        /**if (marker.equals(myMarker))
-        {
-            //handle click here
-        }**/
+            if(e.getCategory().equals("")||e.getCategory() == null){
+                if(e.getType().equals("FOUND"))
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.selectfound));
+                else
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.selectlost));
+            }else{
+                if(e.getCategory().equals("hotspot"))
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.selecthotspot));
+                else
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.selectgroup));
+            }
 
-        Report e = (Report)marker.getTag();
-        System.out.println(e.getLocation());
-        category = "home";
-        new PopulateChartTask(context, e.getLocation()).execute();
+
+            new PopulateChartTask(context, e.getLocation()).execute();
+
+        }catch(Exception ex){
+            //selecting current location
+        }
 
 
         return true;
@@ -598,18 +648,29 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         // return;
         //}
         //
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
+        updateLocationUI();
+
+    }
+
+    private void updateLocationUI() {
+        if (mMap == null) {
             return;
         }
-        mMap.setMyLocationEnabled(true);
-
+        try {
+            if (mLocationPermissionGranted) {
+                getCurrentLocation();
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                //mLastKnownLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            //Log.e("Exception: %s", e.getMessage());
+        }
     }
 
     @Override
@@ -1065,6 +1126,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
                     if(reports == null){
                         mMap.clear();
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.here)));
                         ActionItemBadge.hide(badgeMenu.findItem(SAMPLE2_ID));
                         if(listReportAdapter != null){
                             listReportDataHeader.clear();
@@ -1101,13 +1163,13 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             }
                         }
 
-                        if(e.getUsettle() == myreportids){
+                        if((e.getUsettle() == myreportids)&& (myreportids != 0)){
                             e.setSettled(true);
                         }else{
                             e.setSettled(false);
                         }
 
-                        listReportDataHeader.add(e.getSubject().toUpperCase() + "(" + e.getDate() + ")");
+                        listReportDataHeader.add((headerCount + 1) + ". " +  e.getSubject().toUpperCase() + " (" + e.getDate() + ")");
 
                         ArrayList<Report> arrReports = new ArrayList<Report>();
                         arrReports.add(e);
@@ -1133,13 +1195,30 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
                     mMap.clear();
 
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.here)));
+
                     LatLngBounds.Builder bounds = new LatLngBounds.Builder();
+
+                    bounds.include(new LatLng(latitude, longitude));
 
                     LatLng myLatLng = null;
 
                     boolean doBounds = false;
 
                     int reportID = 0;
+
+                    //list of duplicate here
+                    ArrayList<Integer> collect = new ArrayList<>();
+
+                    for(int i = 0; i < reports.length - 1; i ++){
+                        for(int j = i + 1; j < reports.length; j++){
+                            if(reports[i].getLocation().equals(reports[j].getLocation())){
+                                collect.add(j);
+                                if(!reports[i].getCategory().equals("hotspot"))
+                                    reports[i].setCategory("group");
+                            }
+                        }
+                    }
 
                     for(Report e: reports){
                         String[] f = e.getLocation().split(",");
@@ -1154,15 +1233,31 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             info.setDate("Date : " + e.getDate());
                             info.setContact(e.getContact());
                             info.setLocation(e.getLocation());
+                            info.setType(e.getType());
+                            info.setCategory(e.getCategory());
 
                             myLatLng = latlng;
 
                             if(e.getType().equals("FOUND")){
-                                Marker m = mMap.addMarker(new MarkerOptions().position(myLatLng).title(new Integer(e.getId()).toString()).icon(BitmapDescriptorFactory.fromResource(R.drawable.found)).snippet(e.getType()));
+                                Marker m;
+                                if(e.getCategory().equals("hotspot"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotspot)));
+                                else if(e.getCategory().equals("group"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.group)));
+                                else
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.found)));
+
 
                                 m.setTag(info);
                             }else{
-                                Marker m = mMap.addMarker(new MarkerOptions().position(myLatLng).title(new Integer(e.getId()).toString()).icon(BitmapDescriptorFactory.fromResource(R.drawable.lost)).snippet(e.getType()));
+                                Marker m;
+
+                                if(e.getCategory().equals("hotspot"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotspot)));
+                                else if(e.getCategory().equals("group"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.group)));
+                                else
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.lost)));
 
                                 m.setTag(info);
                             }
@@ -1182,7 +1277,20 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         return;
                     }
 
+
+                    int counters = 0;
+
                     for(Report e: reports){
+
+                        boolean bCont = false;
+                        for(int f : collect){
+                            if(counters == f)
+                                bCont = true;
+                        }
+
+                        if(bCont)
+                            continue;
+
                         String[] f = e.getLocation().split(",");
                         LatLng latlng = new LatLng(Double.parseDouble(f[0]), Double.parseDouble(f[1]));
                         if(e.getUserId() == Integer.parseInt(accounts[0].name)){
@@ -1195,14 +1303,29 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             info.setDate("Date : " + e.getDate());
                             info.setContact(e.getContact());
                             info.setLocation(e.getLocation());
+                            info.setType(e.getType());
+                            info.setCategory(e.getCategory());
 
                             if(e.getType().equals("FOUND")){
-                                Marker m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory
-                                        .fromResource(R.drawable.found)));
+                                Marker m;
+                                if(e.getCategory().equals("hotspot"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotspot)));
+                                else if(e.getCategory().equals("group"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.group)));
+                                else
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.found)));
+
 
                                 m.setTag(info);
                             }else{
-                                Marker m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.lost)));
+                                Marker m;
+
+                                if(e.getCategory().equals("hotspot"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotspot)));
+                                else if(e.getCategory().equals("group"))
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.group)));
+                                else
+                                    m = mMap.addMarker(new MarkerOptions().position(latlng).title(new Integer(e.getId()).toString()).snippet(e.getType()).icon(BitmapDescriptorFactory.fromResource(R.drawable.lost)));
 
                                 m.setTag(info);
                             }
@@ -1218,7 +1341,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             badgeCount += 1;
                         }
 
-
+                        counters += 1;
                     }
 
                     if (badgeCount > 0) {
