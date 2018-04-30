@@ -83,7 +83,9 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1"; //"http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.4:8089"; //"http://alfiederico.com/iRetrieve-0.0.1";
+
+    private boolean bMapSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +172,8 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 //mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                 mMap.getUiSettings().setZoomControlsEnabled(true);
+
+                bMapSearch = true;
             }
         }catch(Exception ex){
             hideKeyboard();
@@ -212,6 +216,8 @@ public class Activity_Report extends FragmentActivity implements OnMapReadyCallb
 
     //Getting current location
     private void getCurrentLocation() {
+        if(bMapSearch == true)
+            return;
         mMap.clear();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling

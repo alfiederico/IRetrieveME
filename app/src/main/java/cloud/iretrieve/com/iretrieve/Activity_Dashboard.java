@@ -149,7 +149,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.4:8089";
 
     private static int iRadius = 50;
 
@@ -205,6 +205,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             long id) {
 
                         final TextView txtID = (TextView) v.findViewById(R.id.txtID);
+                        final TextView txtUserID = (TextView) v.findViewById(R.id.txtUserID);
                         final TextView txtSettle = (TextView) v.findViewById(R.id.txtSettled);
 
                         if(txtSettle.getText().toString().contains("YES")){
@@ -212,10 +213,16 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             return false;
                         }
 
+                        AccountManager accountManager = AccountManager.get(context);
+                        Account[] accounts = accountManager.getAccountsByType("IRetrieve");
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                        builder.setMessage("Settle " + txtID.getText().toString());
+                        if(txtUserID.getText().equals(accounts[0].name)){
+                            builder.setMessage("If you settle your own report then it will be marked as cancelled or deleted. Continue?");
+                        }else{
+                            builder.setMessage("Settle " + txtID.getText().toString());
+                        }
 
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
                         {
@@ -386,7 +393,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                     } else if (txtHome.getText().toString().equals(erm)) {
 
                         txtHome.setTextColor(Color.parseColor("#F44336"));
-                       // txtHomeSub.setText("report locations");
+                        // txtHomeSub.setText("report locations");
                         category = "home";
                         new PopulateChartTask(context).execute();
                     } else if (txtReport.getText().toString().equals(erm)) {
@@ -531,7 +538,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                 }
             }
         }
-       updateLocationUI();
+        updateLocationUI();
     }
 
     //Getting current location
@@ -585,6 +592,9 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             Report e = (Report)marker.getTag();
             System.out.println(e.getLocation());
             category = "home";
+
+            if(e.getCategory() == null)
+                e.setCategory("");
 
             if(e.getCategory().equals("")||e.getCategory() == null){
                 if(e.getType().equals("FOUND"))
@@ -814,7 +824,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         if (badgeCount > 0) {
             ActionItemBadge.update(this, menu.findItem(SAMPLE2_ID), faw_android, ActionItemBadge.BadgeStyles.GREY, badgeCount);
         } else {
-           //ActionItemBadge.hide(menu.findItem(SAMPLE2_ID));
+            //ActionItemBadge.hide(menu.findItem(SAMPLE2_ID));
         }
 
 
@@ -835,7 +845,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
 
 
-      int id = item.getItemId();
+        int id = item.getItemId();
 
         if (id == SAMPLE2_ID && myreportid != 0) {
 
@@ -886,7 +896,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
 
         public ReportList_ExpandableAdapter(Context context, List<String> listDataHeader,
-                                             HashMap<String, List<Report>> listChildData) {
+                                            HashMap<String, List<Report>> listChildData) {
             this._context = context;
             this._listDataHeader = listDataHeader;
             this._listDataChild = listChildData;
@@ -923,6 +933,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             TextView txtContact = (TextView) convertView.findViewById(R.id.txtContact);
             ImageView mPhoto = (ImageView) convertView.findViewById(R.id.imageView);
             TextView txtSettled = (TextView) convertView.findViewById(R.id.txtSettled);
+            TextView txtUserID = (TextView) convertView.findViewById(R.id.txtUserID);
 
 
 
@@ -934,6 +945,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             txtDate.setText("Date : " + new String(childText.getDate()).toString());
             txtPlace.setText("Place : " + new String(childText.getPlace()).toString());
             txtContact.setText("Contact : " + new String(childText.getContact()).toString());
+            txtUserID.setText(new Integer(childText.getUserId()).toString());
+
 
             if(childText.isSettled()){
                 txtSettled.setText("Settled: YES");
@@ -1098,7 +1111,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPreExecute() {
             try {
-               // showProgressDialog();
+                // showProgressDialog();
             } catch (Exception ex) {
                 showMessage(ex.toString());
             }
@@ -1214,6 +1227,9 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         for(int j = i + 1; j < reports.length; j++){
                             if(reports[i].getLocation().equals(reports[j].getLocation())){
                                 collect.add(j);
+                                if(reports[i].getCategory() == null)
+                                    reports[i].setCategory("");
+
                                 if(!reports[i].getCategory().equals("hotspot"))
                                     reports[i].setCategory("group");
                             }
@@ -1225,7 +1241,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         LatLng latlng = new LatLng(Double.parseDouble(f[0]), Double.parseDouble(f[1]));
                         if(e.getUserId() == Integer.parseInt(accounts[0].name)){
 
-
+                            if(e.getCategory() == null)
+                                e.setCategory("");
 
                             Report info = new Report();
                             info.setSubject("Subject : " + e.getSubject() );
@@ -1296,6 +1313,9 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         if(e.getUserId() == Integer.parseInt(accounts[0].name)){
 
                         }else if(distance(myLatLng.latitude,myLatLng.longitude,latlng.latitude,latlng.longitude,'K') <= iRadius){
+
+                            if(e.getCategory() == null)
+                                e.setCategory("");
 
                             Report info = new Report();
                             info.setSubject("Subject : " + e.getSubject() );
@@ -1492,7 +1512,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                             //Intent intent = new Intent();
                             //intent.putExtra("intRadius", dummy);
                             //setResult(5, intent);
-                           // finish();
+                            // finish();
                             category = "home";
                             new PopulateChartTask(context).execute();
                         }

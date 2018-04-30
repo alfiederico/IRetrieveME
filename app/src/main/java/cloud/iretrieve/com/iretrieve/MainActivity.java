@@ -41,7 +41,7 @@ import static junit.framework.Assert.assertTrue;
 
 
 public class MainActivity extends Activity {
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.4:8089";
     TextView txtRegister;
     TextView txtForgot;
     Button btnLogin;

@@ -35,7 +35,7 @@ public class Activity_ForgotPassword extends Activity {
     private TextView txtLogin;
     Button btnRecover;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.4:8089";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
