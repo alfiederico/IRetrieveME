@@ -149,7 +149,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://192.168.254.4:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
 
     private static int iRadius = 50;
 
@@ -1111,7 +1111,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPreExecute() {
             try {
-                // showProgressDialog();
+                showProgressDialog();
             } catch (Exception ex) {
                 showMessage(ex.toString());
             }
@@ -1133,7 +1133,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
             try{
                 //add bounds
-
+                pDlg.dismiss();
                 badgeCount = 0;
                 if(category == "home"){
 
