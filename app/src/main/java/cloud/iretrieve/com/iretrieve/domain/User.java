@@ -36,6 +36,12 @@ public class User {
     @JsonProperty("radius")
     private String radius;
 
+    @JsonProperty("points")
+    private int points;
+
+    @JsonProperty("token")
+    private int token;
+
     private Set<Role> roles;
 
     public String getPhone() {
@@ -108,6 +114,22 @@ public class User {
 
     public void setRadius(String radius) {
         this.radius = radius;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int getToken() {
+        return token;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
     }
 }
 

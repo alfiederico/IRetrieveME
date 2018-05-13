@@ -44,12 +44,14 @@ public class Activity_Setting extends Activity {
     EditText mNameLast;
     EditText mPassword;
     EditText mRadius;
+    EditText mToken;
+    EditText mPoints;
 
     EditText mPhone;
     Button btnRegister;
     Context context = null;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.2:8089";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,11 +72,15 @@ public class Activity_Setting extends Activity {
         mNameLast = (EditText)findViewById(R.id.editLastName);
         mPassword = (EditText)findViewById(R.id.editPassword);
         mRadius = (EditText)findViewById(R.id.editRadius);
+        mToken = (EditText)findViewById(R.id.editToken);
+        mPoints = (EditText)findViewById(R.id.editPoints);
 
         mPhone = (EditText)findViewById(R.id.editPhone);
         btnRegister = (Button)findViewById(R.id.btnRegister);
 
         mEmail.setEnabled(false);
+        mToken.setEnabled(false);
+        mPoints.setEnabled(false);
 
 
     }
@@ -227,6 +233,8 @@ public class Activity_Setting extends Activity {
 
                     mPhone.setText(user.getPhone());
                     mRadius.setText(user.getRadius());
+                    mToken.setText(new Integer(user.getToken()).toString());
+                    mPoints.setText(new Integer(user.getPoints()).toString());
 
                 }
             }catch(Exception ex){

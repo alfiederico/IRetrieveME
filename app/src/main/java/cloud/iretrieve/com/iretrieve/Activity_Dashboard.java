@@ -2,6 +2,7 @@ package cloud.iretrieve.com.iretrieve;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -21,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -106,6 +108,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     TextView txtSettle;
     TextView txtHistory;
     TextView txtSetting;
+    TextView txtBuy;
+    TextView txtRedeem;
     TextView txtStatistics;
     TextView txtLogout;
 
@@ -116,6 +120,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
     TextView txtSettleSub;
     TextView txtHistorySub;
     TextView txtSettingSub;
+    TextView txtBuySub;
+    TextView txtRedeemSub;
     TextView txtStatisticSub;
     TextView txtLogoutSub;
     ScrollView mScrollView;
@@ -149,7 +155,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.2:8089";
 
     private static int iRadius = 50;
 
@@ -282,6 +288,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettle = (TextView) findViewById(R.id.txtSettle);
         txtHistory = (TextView) findViewById(R.id.txtHistory);
         txtSetting = (TextView) findViewById(R.id.txtSetting);
+        txtBuy = (TextView) findViewById(R.id.txtBuy);
+        txtRedeem = (TextView) findViewById(R.id.txtRedeem);
         txtLogout = (TextView) findViewById(R.id.txtLogout);
         txtStatistics = (TextView) findViewById(R.id.txtStatistics);
 
@@ -291,6 +299,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettleSub = (TextView) findViewById(R.id.txtSettleSub);
         txtHistorySub = (TextView) findViewById(R.id.txtHistorySub);
         txtSettingSub = (TextView) findViewById(R.id.txtSettingSub);
+        txtBuySub = (TextView) findViewById(R.id.txtBuySub);
+        txtRedeemSub = (TextView) findViewById(R.id.txtRedeemSub);
         txtStatisticSub = (TextView) findViewById(R.id.txtStatisticsSub);
         txtLogoutSub = (TextView) findViewById(R.id.txtLogoutSub);
 
@@ -327,6 +337,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettle.setWidth(screen.x / 3);
         txtHistory.setWidth(screen.x / 3);
         txtSetting.setWidth(screen.x / 3);
+        txtBuy.setWidth(screen.x / 3);
+        txtRedeem.setWidth(screen.x / 3);
         txtStatistics.setWidth(screen.x / 3);
         txtLogout.setWidth(screen.x / 3);
 
@@ -337,6 +349,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettleSub.setWidth(screen.x / 3);
         txtHistorySub.setWidth(screen.x / 3);
         txtSettingSub.setWidth(screen.x / 3);
+        txtBuySub.setWidth(screen.x / 3);
+        txtRedeemSub.setWidth(screen.x / 3);
         txtStatisticSub.setWidth(screen.x / 3);
         txtLogoutSub.setWidth(screen.x / 3);
 
@@ -347,6 +361,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettle.setOnClickListener(this);
         txtHistory.setOnClickListener(this);
         txtSetting.setOnClickListener(this);
+        txtBuy.setOnClickListener(this);
+        txtRedeem.setOnClickListener(this);
         txtLogout.setOnClickListener(this);
 
         txtCustomRangeSub.setOnClickListener(this);
@@ -355,6 +371,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettleSub.setOnClickListener(this);
         txtHistorySub.setOnClickListener(this);
         txtSettingSub.setOnClickListener(this);
+        txtBuySub.setOnClickListener(this);
+        txtRedeemSub.setOnClickListener(this);
         txtStatisticSub.setOnClickListener(this);
         txtLogoutSub.setOnClickListener(this);
 
@@ -417,6 +435,16 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         //txtSettingSub.setText("current location");
                         category = "Setting";
                         new PopulateChartTask(context).execute();
+                    } else if (txtBuy.getText().toString().equals(erm)) {
+                        txtSetting.setTextColor(Color.parseColor("#F44336"));
+                        //txtSettingSub.setText("current location");
+                        category = "Buy";
+                        new PopulateChartTask(context).execute();
+                    } else if (txtRedeem.getText().toString().equals(erm)) {
+                        txtSetting.setTextColor(Color.parseColor("#F44336"));
+                        //txtSettingSub.setText("current location");
+                        category = "Redeem";
+                       new PopulateChartTask(context).execute();
                     } else if (txtStatistics.getText().toString().equals(erm)) {
                         txtStatistics.setTextColor(Color.parseColor("#F44336"));
                         //txtSettingSub.setText("current location");
@@ -754,6 +782,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettle.setTextColor(Color.parseColor("#ffffff"));
         txtHistory.setTextColor(Color.parseColor("#ffffff"));
         txtSetting.setTextColor(Color.parseColor("#ffffff"));
+        txtBuy.setTextColor(Color.parseColor("#ffffff"));
+        txtRedeem.setTextColor(Color.parseColor("#ffffff"));
         txtStatistics.setTextColor(Color.parseColor("#ffffff"));
         txtLogout.setTextColor(Color.parseColor("#ffffff"));
 
@@ -763,6 +793,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         txtSettleSub.setText("");
         txtHistorySub.setText("");
         txtSettingSub.setText("");
+        txtBuySub.setText("");
+        txtRedeemSub.setText("");
         txtStatisticSub.setText("");
         txtLogoutSub.setText("");
 
@@ -804,6 +836,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         top250.add("Report");
         top250.add("Settle");
         top250.add("History");
+        top250.add("Buy");
+        top250.add("Redeem");
         top250.add("Setting");
         top250.add("Statistics");
         top250.add("Logout");
@@ -915,6 +949,8 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
         }
 
 
+
+        @SuppressLint("NewApi")
         @Override
         public View getChildView(int groupPosition, final int childPosition,
                                  boolean isLastChild, View convertView, ViewGroup parent) {
@@ -1067,6 +1103,16 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         }
 
 
+                    case "Buy":
+                        Intent iBuy = new Intent(mContext, Activity_Buy.class);
+
+                        startActivityForResult(iBuy,10);
+                        break;
+                    case "Redeem":
+                        Intent iRedeem = new Intent(mContext, Activity_Setting.class);
+
+                        startActivityForResult(iRedeem,11);
+                        break;
                     case "Setting":
                         Intent iSetting = new Intent(mContext, Activity_Setting.class);
 

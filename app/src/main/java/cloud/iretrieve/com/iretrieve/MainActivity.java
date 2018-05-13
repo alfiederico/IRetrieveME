@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -41,7 +42,7 @@ import static junit.framework.Assert.assertTrue;
 
 
 public class MainActivity extends Activity {
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.2:8089";
     TextView txtRegister;
     TextView txtForgot;
     Button btnLogin;
@@ -62,6 +63,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
 
+
+
         try {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.activity_main);
@@ -70,7 +73,19 @@ public class MainActivity extends Activity {
             init();
             createListener();
         } catch (Exception ex) {
-            showMessage(ex.toString());
+            //showMessage(ex.toString());
+        }
+
+        try{
+            Intent intent = getIntent();
+            Uri uri = intent.getData();
+
+            if(uri.toString() != null || uri.toString() != ""){
+                new ConfirmTask(this, uri.getQueryParameter("token")).execute();
+            }
+
+        }catch(Exception ex){
+
         }
 
     }
@@ -239,7 +254,7 @@ public class MainActivity extends Activity {
                     MainActivity.this.getCurrentFocus()
                             .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         } catch (Exception ex) {
-            showMessage(ex.toString());
+            //showMessage(ex.toString());
         }
 
 
@@ -256,6 +271,68 @@ public class MainActivity extends Activity {
         }
     }
 
+    private class ConfirmTask extends AsyncTask<Void,Void,Message>{
+        private Context mContext = null;
+        private ProgressDialog pDlg = null;
+        private String confirmURL  = "";
+
+        public ConfirmTask(Context mContext, String e) {
+
+            this.mContext = mContext;
+            this.confirmURL = e;
+        }
+
+        @Override
+        protected Message doInBackground(Void... params) {
+            try {
+
+                RestTemplate restTemplate = new RestTemplate();
+                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+
+                final String url = SERVICE_URL + "/mobile/registrationConfirm?token=" + confirmURL;
+
+                List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
+                supportedMediaTypes.add(new MediaType("text", "plain"));
+                supportedMediaTypes.add(new MediaType("application", "json"));
+                converter.setSupportedMediaTypes(supportedMediaTypes);
+
+                restTemplate.getMessageConverters().add(converter);
+                Message message = restTemplate.getForObject(url,Message.class);
+
+                return message;
+            } catch (Exception ex) {
+                // showMessage(ex.toString());
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            try {
+                hideKeyboard();
+                showProgressDialog();
+            } catch (Exception ex) {
+                //showMessage(ex.toString());
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Message message) {
+            pDlg.dismiss();
+            showMessage(message.getContent());
+        }
+
+        private void showProgressDialog() {
+            pDlg = new ProgressDialog(mContext);
+            pDlg.setMessage("Validating...");
+            pDlg.setProgressDrawable(mContext.getWallpaper());
+            pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDlg.setCancelable(false);
+            pDlg.show();
+
+        }
+
+    }
 
     private class AuthenticateTask extends AsyncTask<Void, Void, Message> {
         private Context mContext = null;

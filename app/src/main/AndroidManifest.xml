@@ -38,6 +38,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data
+                    android:host="alfiederico.com"
+                    android:pathPrefix="/iRetrieve-0.0.1/registrationConfirm"
+                    android:scheme="http" />
+                <!-- note that the leading "/" is required for pathPrefix -->
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activity_Dashboard"
@@ -53,17 +65,17 @@
             android:name=".Activity_Registration"
             android:label="@string/title_activity_register"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Dashboard"></activity>
+            android:theme="@style/Dashboard" />
         <activity
             android:name=".Activity_ForgotPassword"
             android:label="@string/title_activity_activity__forgot_password"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Dashboard"></activity>
+            android:theme="@style/Dashboard" />
         <activity
             android:name=".Activity_Report"
             android:label="@string/title_activity_report"
             android:parentActivityName=".Activity_Dashboard"
-            android:theme="@style/Dashboard"></activity>
+            android:theme="@style/Dashboard" />
         <activity
             android:name=".Activity_Settle"
             android:label="@string/title_activity_settle"
@@ -76,6 +88,15 @@
         <activity
             android:name=".Activity_History"
             android:label="@string/title_activity_history"
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
+        </activity>
+        <activity
+            android:name=".Activity_Buy"
+            android:label="@string/title_activity_buy"
             android:parentActivityName=".Activity_Dashboard"
             android:theme="@style/Dashboard">
             <meta-data
@@ -100,7 +121,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
         </activity>
-
         <activity
             android:name=".Activity_Statistic"
             android:label="@string/title_activity_statistics"
@@ -123,6 +143,7 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" /> <!-- We haven't defined this -->
         </service>
+
 
     </application>
 

@@ -118,6 +118,40 @@
             android:singleLine="true"
             android:maxLength="48"
             />
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned"
+            android:id="@+id/editToken"
+            android:layout_below="@+id/editPhone"
+            android:paddingLeft="8dp"
+            android:drawablePadding="10dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:drawableLeft="@drawable/store"
+            android:hint="Token"
+            android:textColorHint="#9e9e9e"
+            android:textColor="#424242"
+            android:singleLine="true"
+            android:maxLength="48"
+            />
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned"
+            android:id="@+id/editPoints"
+            android:layout_below="@+id/editPhone"
+            android:paddingLeft="8dp"
+            android:drawablePadding="10dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:drawableLeft="@drawable/store"
+            android:hint="Points"
+            android:textColorHint="#9e9e9e"
+            android:textColor="#424242"
+            android:singleLine="true"
+            android:maxLength="48"
+            />
 
         <Button
             android:layout_width="fill_parent"

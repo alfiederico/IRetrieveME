@@ -43,7 +43,7 @@ public class Activity_Registration extends Activity {
     EditText mPhone;
     Button btnRegister;
 
-    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
+    private static final String SERVICE_URL = "http://192.168.254.2:8089";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +187,9 @@ public class Activity_Registration extends Activity {
                 newUser.setPhone(mPhone.getText().toString());
                 newUser.setEmail(mEmail.getText().toString());
                 newUser.setRadius("50");
+                newUser.setPoints(0);
+                newUser.setToken(0);
+
 
                 MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 

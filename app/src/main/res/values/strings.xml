@@ -8,6 +8,8 @@
     <string name="title_activity_report">Report</string>
     <string name="title_activity_settle">Settle</string>
     <string name="title_activity_history">History</string>
+    <string name="title_activity_buy">Buy</string>
+    <string name="title_activity_redeem">Redeem</string>
     <string name="title_activity_setting">Setting</string>
     <string name="title_activity_statistics">Statistics</string>
     <string name="title_activity_settlefeed">Settle Notifications</string>
