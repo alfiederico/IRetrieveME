@@ -1109,7 +1109,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         startActivityForResult(iBuy,10);
                         break;
                     case "Redeem":
-                        Intent iRedeem = new Intent(mContext, Activity_Setting.class);
+                        Intent iRedeem = new Intent(mContext, Activity_Redeem.class);
 
                         startActivityForResult(iRedeem,11);
                         break;

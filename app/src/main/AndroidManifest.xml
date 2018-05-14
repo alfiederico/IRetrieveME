@@ -104,6 +104,15 @@
                 android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
         </activity>
         <activity
+            android:name=".Activity_Redeem"
+            android:label="@string/title_activity_redeem"
+            android:parentActivityName=".Activity_Dashboard"
+            android:theme="@style/Dashboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
+        </activity>
+        <activity
             android:name=".Activity_Setting"
             android:label="@string/title_activity_setting"
             android:parentActivityName=".Activity_Dashboard"
