@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -56,7 +57,7 @@ public class MainActivity extends Activity {
     public static final String Password = "passwordKey";
     public static final String Remember = "rememberKey";
     SharedPreferences sharedpreferences;
-
+    boolean isFirstStart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,10 @@ public class MainActivity extends Activity {
             //showMessage(ex.toString());
         }
 
+
+
+
+
         try{
             Intent intent = getIntent();
             Uri uri = intent.getData();
@@ -87,6 +92,32 @@ public class MainActivity extends Activity {
         }catch(Exception ex){
 
         }
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //  Intro App Initialize SharedPreferences
+                SharedPreferences getSharedPreferences = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+
+                //  Create a new boolean and preference and set it to true
+                isFirstStart = getSharedPreferences.getBoolean("firstStart3", true);
+
+
+                //  Check either activity or app is open very first time or not and do action
+                if (isFirstStart) {
+
+                    //  Launch application introduction screen
+                    Intent i = new Intent(MainActivity.this, MyIntro.class);
+                    startActivity(i);
+                    SharedPreferences.Editor e = getSharedPreferences.edit();
+                    e.putBoolean("firstStart3", false);
+                    e.apply();
+                }
+            }
+        });
+        t.start();
+
 
     }
 

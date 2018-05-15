@@ -22,5 +22,7 @@
     <string name="sample_2">Sample 2</string>
     <string name="spinner_title">Select Type</string>
 
+    <string name="app_intro_skip">Skip</string>
+
 
 </resources>

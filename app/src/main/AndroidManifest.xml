@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -139,6 +140,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud.iretrieve.com.iretrieve.Activity_Dashboard" />
         </activity>
+        <activity
+            android:name=".MyIntro"
+
+            />
 
         <service
             android:name=".AuthenticatorService"
