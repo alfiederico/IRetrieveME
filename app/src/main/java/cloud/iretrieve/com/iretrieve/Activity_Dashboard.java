@@ -155,7 +155,7 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
 
     private GoogleApiClient googleApiClient;
 
-    private static final String SERVICE_URL = "http://192.168.254.2:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
 
     private static int iRadius = 50;
 

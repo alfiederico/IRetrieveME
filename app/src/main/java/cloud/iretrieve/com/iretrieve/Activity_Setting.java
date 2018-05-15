@@ -51,7 +51,7 @@ public class Activity_Setting extends Activity {
     Button btnRegister;
     Context context = null;
 
-    private static final String SERVICE_URL = "http://192.168.254.2:8089";
+    private static final String SERVICE_URL = "http://alfiederico.com/iRetrieve-0.0.1";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
