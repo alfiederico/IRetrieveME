@@ -451,7 +451,34 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
                         category = "Statistics";
                         new PopulateChartTask(context).execute();
                     } else if (txtLogout.getText().toString().equals(erm)) {
-                        NavUtils.navigateUpFromSameTask((Activity) context);
+
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                        builder.setMessage("Are you sure you want to logout?");
+
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                                NavUtils.navigateUpFromSameTask((Activity) context);
+                            }
+                        });
+
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+
+                                dialog.dismiss();
+                            }
+                        });
+
+                        builder.show();
+
                     }
 
                 } catch (Exception ex) {
