@@ -919,11 +919,69 @@ public class Activity_Dashboard extends FragmentActivity implements OnMapReadyCa
             } catch (Exception ex) {
                 showMessage(ex.getMessage());
             }
+        }else{
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            builder.setMessage("Are you sure you want to logout?");
+
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dialog.dismiss();
+                    NavUtils.navigateUpFromSameTask((Activity) context);
+                }
+            });
+
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+
+                    dialog.dismiss();
+
+                }
+            });
+
+            builder.show();
         }
 
+        return true;
 
+    }
 
-        return  super.onOptionsItemSelected(item);
+    @Override
+    public void onBackPressed()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setMessage("Are you sure you want to logout?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.dismiss();
+                NavUtils.navigateUpFromSameTask((Activity) context);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+
+                dialog.dismiss();
+
+            }
+        });
+
+        builder.show();
     }
 
     @Override
